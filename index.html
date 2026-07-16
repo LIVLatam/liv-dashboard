@@ -330,6 +330,7 @@ tr.sel td{background:#1a2035!important}
     <option value="xliv-logistica">Logística</option>
     <option value="xliv-cobro">Cobro</option>
     <option value="xliv-aula">Aula LIV</option>
+    <option value="xliv-csf">CSF</option>
   </select>
   <span class="xliv-pdf-label" style="margin-left:6px">Formato</span>
   <select class="xliv-sel xliv-sel-f" id="xliv-f">
@@ -344,6 +345,7 @@ tr.sel td{background:#1a2035!important}
   <button class="xliv-tab-btn" data-pane="xliv-cobro" onclick="xTab('xliv-cobro')">&#128179; Cobro</button>
   <button class="xliv-tab-btn" data-pane="xliv-aula" onclick="xTab('xliv-aula')">&#127979; Aula LIV</button>
   <button class="xliv-tab-btn" data-pane="xliv-bonif" onclick="xTab('xliv-bonif')">&#127873; Bonificaciones</button>
+  <button class="xliv-tab-btn" data-pane="xliv-csf" onclick="xTab('xliv-csf')">&#129534; CSF</button>
 </div>
 <div id="xliv-contratos" class="xliv-pane xa">
 <div class="tw">
@@ -473,6 +475,19 @@ tr.sel td{background:#1a2035!important}
   <tbody id="xliv-bontbody"></tbody><tfoot id="xliv-bonfoot"></tfoot>
 </table></div>
 </div>
+<div id="xliv-csf" class="xliv-pane">
+<div style="padding:12px 24px 0;color:#8fd7ff;font-size:12px">&#129534; Constancia de Situaci&oacute;n Fiscal (CSF) &middot; barrido autom&aacute;tico de la carpeta de Drive &middot; <span id="xliv-csf-upd" style="color:#4a7fa5"></span></div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;padding:12px 24px">
+  <div style="flex:1;min-width:320px">
+    <div style="font-size:11px;letter-spacing:2px;color:#34d399;text-transform:uppercase;margin-bottom:8px;font-weight:700">&#9989; Compartieron CSF (<span id="xliv-csf-nsi">0</span>)</div>
+    <div class="tw"><table><thead><tr><th style="width:30px">#</th><th style="text-align:left">Colegio</th><th style="text-align:left">Ciudad</th><th style="text-align:left">Estado</th></tr></thead><tbody id="xliv-csf-si"></tbody></table></div>
+  </div>
+  <div style="flex:1;min-width:320px">
+    <div style="font-size:11px;letter-spacing:2px;color:#e0a23b;text-transform:uppercase;margin-bottom:8px;font-weight:700">&#9203; Falta CSF (<span id="xliv-csf-nno">0</span>)</div>
+    <div class="tw"><table><thead><tr><th style="width:30px">#</th><th style="text-align:left">Colegio</th><th style="text-align:left">Ciudad</th><th style="text-align:left">Estado</th></tr></thead><tbody id="xliv-csf-no"></tbody></table></div>
+  </div>
+</div>
+</div>
 <div class="dp" id="dp">
   <div style="display:flex;justify-content:space-between;align-items:flex-start">
     <div>
@@ -486,6 +501,7 @@ tr.sel td{background:#1a2035!important}
 </div>
 <div class="footer">LIV · Dashboard operativo · Ciclo 2026 · 🔒 = pendiente firma colegio · Clic en fila para detalle completo</div>
 <script>document.write('<script src="datos.js?v=' + Date.now() + '"><\/script>');</script>
+<script>document.write('<script src="csf.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
 const C=(window.LIV_C||[]);
 
@@ -677,6 +693,7 @@ function xTab(id){
   if(id==='xliv-cobro') xRenderCobro();
   if(id==='xliv-aula') xRenderAula();
   if(id==='xliv-bonif') xRenderBonif();
+  if(id==='xliv-csf') xRenderCSF();
 }
 function xRenderLog(){
   var list=getFiltered(),tb=document.getElementById('xliv-ltbody'),tf=document.getElementById('xliv-ltfoot');
@@ -810,6 +827,25 @@ function xRenderBonif(){
   if(tf) tf.innerHTML='<tr class="xliv-tfoot"><td colspan="8" style="text-align:right;padding-right:8px;color:#4a7fa5">'+list.length+' colegios'+(fv?'':' · 🎁 '+gratAll+' con gratuidad total año 1')+' · Años 2+ = precio de contrato + INPC salvo escalonado explícito</td></tr>';
   var btn=document.querySelector('.xliv-tab-btn[data-pane="xliv-bonif"]');
   if(btn) btn.innerHTML='&#127873; Bonificaciones'+(gratAll>0?' <span style="background:#34d399;color:#0a1a10;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">🎁'+gratAll+'</span>':'');
+}
+
+function xRenderCSF(){
+  var csf=(window.LIV_CSF||{si:[],updated:''});
+  var si={}; (csf.si||[]).forEach(function(id){si[id]=1;});
+  var arr=C.slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
+  var siH='',noH='',ns=0,nn=0;
+  arr.forEach(function(c){
+    var cells='<td style="color:#e8edf5;font-weight:600;text-align:left">'+c.n+'</td><td style="color:#9fb2c8;text-align:left">'+(c.ci||'')+'</td><td style="color:#8893a8;text-align:left">'+(c.es||'')+'</td>';
+    if(si[c.id]){ns++;siH+='<tr><td style="color:#555e70;text-align:center;font-size:10px">'+ns+'</td>'+cells+'</tr>';}
+    else{nn++;noH+='<tr><td style="color:#555e70;text-align:center;font-size:10px">'+nn+'</td>'+cells+'</tr>';}
+  });
+  document.getElementById('xliv-csf-si').innerHTML=siH;
+  document.getElementById('xliv-csf-no').innerHTML=noH;
+  document.getElementById('xliv-csf-nsi').textContent=ns;
+  document.getElementById('xliv-csf-nno').textContent=nn;
+  var u=document.getElementById('xliv-csf-upd'); if(u) u.textContent=csf.updated?('actualizado '+csf.updated):'';
+  var b=document.querySelector('.xliv-tab-btn[data-pane="xliv-csf"]');
+  if(b) b.innerHTML='&#129534; CSF <span style="background:#34d399;color:#0a1a10;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+ns+'/'+arr.length+'</span>';
 }
 
 function xExportar(){
