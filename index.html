@@ -326,11 +326,12 @@ tr.sel td{background:#1a2035!important}
 <div class="xliv-pdf-bar">
   <span class="xliv-pdf-label">Vista</span>
   <select class="xliv-sel xliv-sel-v" id="xliv-v">
-    <option value="xliv-contratos">Contratos</option>
+    <option value="xliv-contratos">Alumnos x contrato</option>
     <option value="xliv-logistica">Logística</option>
     <option value="xliv-cobro">Cobro</option>
     <option value="xliv-aula">Aula LIV</option>
     <option value="xliv-csf">CSF</option>
+    <option value="xliv-alumnosoc">Alumnos OC</option>
   </select>
   <span class="xliv-pdf-label" style="margin-left:6px">Formato</span>
   <select class="xliv-sel xliv-sel-f" id="xliv-f">
@@ -340,12 +341,13 @@ tr.sel td{background:#1a2035!important}
   <button class="xliv-btn" onclick="xExportar()"><span class="xliv-arr">&#11015;</span>&nbsp;EXPORTAR</button>
 </div>
 <div class="xliv-tab-bar">
-  <button class="xliv-tab-btn xa" data-pane="xliv-contratos" onclick="xTab('xliv-contratos')">&#128203; Contratos</button>
+  <button class="xliv-tab-btn xa" data-pane="xliv-contratos" onclick="xTab('xliv-contratos')">&#128203; Alumnos x contrato</button>
   <button class="xliv-tab-btn" data-pane="xliv-logistica" onclick="xTab('xliv-logistica')">&#128666; Logística</button>
   <button class="xliv-tab-btn" data-pane="xliv-cobro" onclick="xTab('xliv-cobro')">&#128179; Cobro</button>
   <button class="xliv-tab-btn" data-pane="xliv-aula" onclick="xTab('xliv-aula')">&#127979; Aula LIV</button>
   <button class="xliv-tab-btn" data-pane="xliv-bonif" onclick="xTab('xliv-bonif')">&#127873; Bonificaciones</button>
   <button class="xliv-tab-btn" data-pane="xliv-csf" onclick="xTab('xliv-csf')">&#129534; CSF</button>
+  <button class="xliv-tab-btn" data-pane="xliv-alumnosoc" onclick="xTab('xliv-alumnosoc')">&#128101; Alumnos OC</button>
 </div>
 <div id="xliv-contratos" class="xliv-pane xa">
 <div class="tw">
@@ -487,6 +489,19 @@ tr.sel td{background:#1a2035!important}
     <div class="tw"><table><thead><tr><th style="width:30px">#</th><th style="text-align:left">Colegio</th><th style="text-align:left">Ciudad</th><th style="text-align:left">Estado</th></tr></thead><tbody id="xliv-csf-no"></tbody></table></div>
   </div>
 </div>
+</div>
+<div id="xliv-alumnosoc" class="xliv-pane">
+<div style="padding:12px 24px 0;color:#8fd7ff;font-size:12px">&#128101; Alumnos por Orden de Compra &middot; colegios con OC completa. Desglose grado x grado seg&uacute;n contrato; <b>&Delta;</b> = total de alumnos de la OC vs contrato.</div>
+<div class="tw"><table>
+ <thead>
+  <tr><th class="grp" colspan="2">COLEGIO</th><th class="grp sep" colspan="4">PREESCOLAR</th><th class="grp sep" colspan="6">PRIMARIA</th><th class="grp sep" colspan="3">TOTALES</th></tr>
+  <tr><th style="width:28px">#</th><th style="text-align:left;min-width:170px">Colegio</th>
+   <th class="sep" style="text-align:center">3a</th><th style="text-align:center">4a</th><th style="text-align:center">5a</th><th style="text-align:center">Pre-F</th>
+   <th class="sep" style="text-align:center">1&deg;</th><th style="text-align:center">2&deg;</th><th style="text-align:center">3&deg;</th><th style="text-align:center">4&deg;</th><th style="text-align:center">5&deg;</th><th style="text-align:center">6&deg;</th>
+   <th class="sep" style="text-align:center">Contrato</th><th style="text-align:center">Alumnos OC</th><th style="text-align:center">&Delta;</th></tr>
+ </thead>
+ <tbody id="xliv-aoctbody"></tbody><tfoot id="xliv-aocfoot"></tfoot>
+</table></div>
 </div>
 <div class="dp" id="dp">
   <div style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -694,6 +709,7 @@ function xTab(id){
   if(id==='xliv-aula') xRenderAula();
   if(id==='xliv-bonif') xRenderBonif();
   if(id==='xliv-csf') xRenderCSF();
+  if(id==='xliv-alumnosoc') xRenderAlumnosOC();
 }
 function xRenderLog(){
   var list=getFiltered(),tb=document.getElementById('xliv-ltbody'),tf=document.getElementById('xliv-ltfoot');
@@ -848,6 +864,34 @@ function xRenderCSF(){
   if(b) b.innerHTML='&#129534; CSF <span style="background:#34d399;color:#0a1a10;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+ns+'/'+arr.length+'</span>';
 }
 
+function xRenderAlumnosOC(){
+  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
+  var tb=document.getElementById('xliv-aoctbody'),tf=document.getElementById('xliv-aocfoot'); if(!tb)return; tb.innerHTML='';
+  var sPE=[0,0,0],sPF=0,sPR=[0,0,0,0,0,0],sTC=0,sOC=0;
+  function cell(v,sep){return '<td'+(sep?' class="sep"':'')+' style="text-align:center;color:#c8cdd8">'+(v?v:'<span style=\'color:#3a4150\'>&ndash;</span>')+'</td>';}
+  arr.forEach(function(c,i){
+    var pe=[c.pe1||0,c.pe2||0,c.pe3||0],pf=c.pf||0,pr=[c.pr1||0,c.pr2||0,c.pr3||0,c.pr4||0,c.pr5||0,c.pr6||0];
+    var totC=pe[0]+pe[1]+pe[2]+pf+pr[0]+pr[1]+pr[2]+pr[3]+pr[4]+pr[5];
+    var ocT=(c.ocpe||0)+(c.ocpr||0); var d=ocT-totC;
+    for(var k=0;k<3;k++)sPE[k]+=pe[k]; sPF+=pf; for(var k=0;k<6;k++)sPR[k]+=pr[k]; sTC+=totC; sOC+=ocT;
+    var dc=d>0?'#34d399':(d<0?'#e06a6a':'#8893a8'); var dt=(d>0?'+':'')+d;
+    tb.innerHTML+='<tr>'
+      +'<td style="color:#555e70;text-align:center;font-size:10px">'+(i+1)+'</td>'
+      +'<td style="color:#e8edf5;font-weight:600;text-align:left">'+c.n+'</td>'
+      +cell(pe[0],1)+cell(pe[1])+cell(pe[2])+cell(pf)+cell(pr[0],1)+cell(pr[1])+cell(pr[2])+cell(pr[3])+cell(pr[4])+cell(pr[5])
+      +'<td class="sep" style="text-align:center;color:#9fb2c8;font-weight:600">'+totC+'</td>'
+      +'<td style="text-align:center;color:#5bc4f5;font-weight:700">'+ocT+'</td>'
+      +'<td style="text-align:center;color:'+dc+';font-weight:700">'+dt+'</td></tr>';
+  });
+  var dT=sOC-sTC,dTc=dT>0?'#34d399':(dT<0?'#e06a6a':'#8893a8');
+  if(tf) tf.innerHTML='<tr class="xliv-tfoot"><td></td><td style="text-align:left;color:#4a7fa5;font-weight:700">TOTAL ('+arr.length+' con OC)</td>'
+    +'<td class="sep" style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[0]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[1]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[2]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPF+'</td>'
+    +'<td class="sep" style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[0]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[1]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[2]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[3]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[4]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[5]+'</td>'
+    +'<td class="sep" style="text-align:center;color:#e8edf5;font-weight:800">'+sTC+'</td><td style="text-align:center;color:#5bc4f5;font-weight:800">'+sOC+'</td><td style="text-align:center;color:'+dTc+';font-weight:800">'+(dT>0?'+':'')+dT+'</td></tr>';
+  var b=document.querySelector('.xliv-tab-btn[data-pane="xliv-alumnosoc"]');
+  if(b) b.innerHTML='&#128101; Alumnos OC <span style="background:#5bc4f5;color:#08131c;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+arr.length+'</span>';
+}
+
 function xExportar(){
   var fmt=document.getElementById('xliv-f').value;
   var tab=document.getElementById('xliv-v').value;
@@ -858,7 +902,7 @@ function xExpPDF(tab){
   if(tab==='xliv-cobro') xRenderCobro();
   if(tab==='xliv-aula') xRenderAula();
   // Setear título del header de print
-  var tabNames={'xliv-contratos':'Contratos','xliv-logistica':'Logística','xliv-cobro':'Cobro','xliv-aula':'Aula LIV'};
+  var tabNames={'xliv-contratos':'Alumnos x contrato','xliv-logistica':'Logística','xliv-cobro':'Cobro','xliv-aula':'Aula LIV'};
   var titleEl=document.getElementById('xliv-print-title');
   var dateEl=document.getElementById('xliv-print-date');
   if(titleEl) titleEl.textContent='Dashboard Lucas Doberti · '+(tabNames[tab]||'Reporte');
