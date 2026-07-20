@@ -332,6 +332,7 @@ tr.sel td{background:#1a2035!important}
     <option value="xliv-aula">Aula LIV</option>
     <option value="xliv-csf">CSF</option>
     <option value="xliv-alumnosoc">Alumnos OC</option>
+    <option value="xliv-profesoresoc">Profesores OC</option>
   </select>
   <span class="xliv-pdf-label" style="margin-left:6px">Formato</span>
   <select class="xliv-sel xliv-sel-f" id="xliv-f">
@@ -348,6 +349,7 @@ tr.sel td{background:#1a2035!important}
   <button class="xliv-tab-btn" data-pane="xliv-bonif" onclick="xTab('xliv-bonif')">&#127873; Bonificaciones</button>
   <button class="xliv-tab-btn" data-pane="xliv-csf" onclick="xTab('xliv-csf')">&#129534; CSF</button>
   <button class="xliv-tab-btn" data-pane="xliv-alumnosoc" onclick="xTab('xliv-alumnosoc')">&#128101; Alumnos OC</button>
+  <button class="xliv-tab-btn" data-pane="xliv-profesoresoc" onclick="xTab('xliv-profesoresoc')">&#129681; Profesores OC</button>
 </div>
 <div id="xliv-contratos" class="xliv-pane xa">
 <div class="tw">
@@ -512,6 +514,19 @@ table.aoc td.pf{color:#b199db;}
 table.aoc td.pr{color:#7fb391;}
 table.aoc td.z{color:#333c4b;}
 </style>
+</div>
+<div id="xliv-profesoresoc" class="xliv-pane">
+<div style="padding:12px 24px 0;color:#8fd7ff;font-size:12px">&#129681; Profesores por Orden de Compra &middot; grupos por grado seg&uacute;n la <b>OC</b> (1 grupo = 1 profesor). El total es la cantidad de profesores que implica la OC.</div>
+<div class="tw"><table class="aoc">
+ <thead>
+  <tr><th class="grp" colspan="2">COLEGIO</th><th class="grp sep" colspan="4">PREESCOLAR (grupos)</th><th class="grp sep" colspan="6">PRIMARIA (grupos)</th><th class="grp sep" colspan="3">PROFESORES</th></tr>
+  <tr><th style="width:24px">#</th><th style="text-align:left;min-width:130px">Colegio</th>
+   <th class="sep" style="text-align:center;width:26px">3a</th><th style="text-align:center;width:26px">4a</th><th style="text-align:center;width:26px">5a</th><th style="text-align:center;width:30px">Pre&#8209;F</th>
+   <th class="sep" style="text-align:center;width:24px">1&deg;</th><th style="text-align:center;width:24px">2&deg;</th><th style="text-align:center;width:24px">3&deg;</th><th style="text-align:center;width:24px">4&deg;</th><th style="text-align:center;width:24px">5&deg;</th><th style="text-align:center;width:24px">6&deg;</th>
+   <th class="sep" style="text-align:center;width:46px">Preesc.</th><th style="text-align:center;width:44px">Prim.</th><th style="text-align:center;width:44px">Total</th></tr>
+ </thead>
+ <tbody id="xliv-poctbody"></tbody><tfoot id="xliv-pocfoot"></tfoot>
+</table></div>
 </div>
 <div class="dp" id="dp">
   <div style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -721,6 +736,7 @@ function xTab(id){
   if(id==='xliv-bonif') xRenderBonif();
   if(id==='xliv-csf') xRenderCSF();
   if(id==='xliv-alumnosoc') xRenderAlumnosOC();
+  if(id==='xliv-profesoresoc') xRenderProfesoresOC();
 }
 function xRenderLog(){
   var list=getFiltered(),tb=document.getElementById('xliv-ltbody'),tf=document.getElementById('xliv-ltfoot');
@@ -806,7 +822,7 @@ function xRenderAula(){
     var tr=document.createElement('tr');
     tr.className=(i%2===0?'er':'or')+' '+getEstCls(c.es);
     tr.innerHTML='<td style="color:#555e70;text-align:center;font-size:10px">'+(i+1)+'</td>'
-      +'<td style="color:#e8edf5;font-weight:600">'+c.n+lk+'</td>'
+      +'<td style="color:#e8edf5;font-weight:600">'+c.n+lk+(/Wexford/i.test(c.n)?' <span style="background:#243a5e;color:#8fd7ff;font-size:9px;padding:1px 7px;border-radius:8px;font-weight:700;letter-spacing:.5px">&times;3 SEDES</span>':'')+'</td>'
       +'<td style="color:#8893a8">'+c.es+'</td>'
       +'<td style="color:#8893a8">'+c.ci+'</td>'
       +'<td class="sep" style="color:#7bc8e8;font-size:11px">'+(c.dir||'&mdash;')+'</td>';
@@ -905,6 +921,33 @@ function xRenderAlumnosOC(){
     +'<td class="sep" style="text-align:center;color:#e8edf5;font-weight:800">'+sTC+'</td><td style="text-align:center;color:#5bc4f5;font-weight:800">'+sOC+'</td><td style="text-align:center;color:'+dTc+';font-weight:800">'+(dT>0?'+':'')+dT+'</td></tr>';
   var b=document.querySelector('.xliv-tab-btn[data-pane="xliv-alumnosoc"]');
   if(b) b.innerHTML='&#128101; Alumnos OC <span style="background:#5bc4f5;color:#08131c;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+arr.length+'</span>';
+}
+
+function xRenderProfesoresOC(){
+  var GR=(window.LIV_OCGRP||{});
+  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
+  var tb=document.getElementById('xliv-poctbody'),tf=document.getElementById('xliv-pocfoot'); if(!tb)return; tb.innerHTML='';
+  var sPE=[0,0,0],sPF=0,sPR=[0,0,0,0,0,0],sTPE=0,sTPR=0,sT=0;
+  function cell(v,lvl,sep){return '<td class="g '+(v?lvl:'z')+(sep?' sep':'')+'">'+(v?v:'&ndash;')+'</td>';}
+  arr.forEach(function(c,i){
+    var g=GR[c.id]||[0,0,0,0,0,0,0,0,0,0];
+    var pe=[g[0],g[1],g[2]],pf=g[3],pr=[g[4],g[5],g[6],g[7],g[8],g[9]];
+    var tPE=pe[0]+pe[1]+pe[2]+pf, tPR=pr[0]+pr[1]+pr[2]+pr[3]+pr[4]+pr[5], tT=tPE+tPR;
+    for(var k=0;k<3;k++)sPE[k]+=pe[k]; sPF+=pf; for(var k=0;k<6;k++)sPR[k]+=pr[k]; sTPE+=tPE; sTPR+=tPR; sT+=tT;
+    tb.innerHTML+='<tr>'
+      +'<td style="color:#555e70;text-align:center;font-size:10px">'+(i+1)+'</td>'
+      +'<td style="color:#e8edf5;font-weight:600;text-align:left">'+c.n+'</td>'
+      +cell(pe[0],'pe',1)+cell(pe[1],'pe')+cell(pe[2],'pe')+cell(pf,'pf')+cell(pr[0],'pr',1)+cell(pr[1],'pr')+cell(pr[2],'pr')+cell(pr[3],'pr')+cell(pr[4],'pr')+cell(pr[5],'pr')
+      +'<td class="sep" style="text-align:center;color:#77aecc;font-weight:600">'+tPE+'</td>'
+      +'<td style="text-align:center;color:#7fb391;font-weight:600">'+tPR+'</td>'
+      +'<td style="text-align:center;color:#5bc4f5;font-weight:700">'+tT+'</td></tr>';
+  });
+  if(tf) tf.innerHTML='<tr class="xliv-tfoot"><td></td><td style="text-align:left;color:#4a7fa5;font-weight:700">TOTAL ('+arr.length+' con OC)</td>'
+    +'<td class="sep" style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[0]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[1]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[2]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPF+'</td>'
+    +'<td class="sep" style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[0]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[1]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[2]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[3]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[4]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[5]+'</td>'
+    +'<td class="sep" style="text-align:center;color:#77aecc;font-weight:800">'+sTPE+'</td><td style="text-align:center;color:#7fb391;font-weight:800">'+sTPR+'</td><td style="text-align:center;color:#5bc4f5;font-weight:800">'+sT+'</td></tr>';
+  var b=document.querySelector('.xliv-tab-btn[data-pane="xliv-profesoresoc"]');
+  if(b) b.innerHTML='&#129681; Profesores OC <span style="background:#5bc4f5;color:#08131c;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+sT+'</span>';
 }
 
 function xExportar(){
@@ -1079,8 +1122,8 @@ render();
 .xliv-pane tbody td{color:#cbd0da !important;}
 .xliv-pane tbody td:nth-child(2){color:#e8edf5 !important;font-weight:600;}
 .xliv-pane tbody tr td{border-left-color:#222838 !important;}
-#xliv-logistica table,#xliv-cobro table,#xliv-aula table,#xliv-oc table{min-width:0 !important;width:auto !important;}
-#xliv-logistica tbody td:nth-child(2),#xliv-cobro tbody td:nth-child(2),#xliv-aula tbody td:nth-child(2),#xliv-oc tbody td:nth-child(2){max-width:240px;overflow:hidden;text-overflow:ellipsis;}
+#xliv-logistica table,#xliv-cobro table,#xliv-aula table,#xliv-oc table,#xliv-bonif table{min-width:0 !important;width:auto !important;}
+#xliv-logistica tbody td:nth-child(2),#xliv-cobro tbody td:nth-child(2),#xliv-aula tbody td:nth-child(2),#xliv-oc tbody td:nth-child(2),#xliv-bonif tbody td:nth-child(2){max-width:240px;overflow:hidden;text-overflow:ellipsis;}
 </style>
 
 <script>
