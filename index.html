@@ -494,11 +494,19 @@ tr.sel td{background:#1a2035!important}
 </div>
 <div id="xliv-alumnosoc" class="xliv-pane">
 <div style="padding:12px 24px 0;color:#8fd7ff;font-size:12px">&#128101; Alumnos por Orden de Compra &middot; colegios con OC completa. Desglose grado x grado seg&uacute;n la <b>OC</b> (no el contrato); <b>&Delta;</b> = total de alumnos OC &minus; contrato.</div>
+<div style="padding:8px 24px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+  <span style="font-size:10px;letter-spacing:2px;color:#4a7fa5;text-transform:uppercase">Filtrar:</span>
+  <select id="xliv-aocfilter" onchange="xRenderAlumnosOC()" style="background:#0d1520;color:#8fd7ff;border:1px solid #1e3050;border-radius:6px;padding:5px 10px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px">
+    <option value="">Todas</option>
+    <option value="eq">Iguales (OC = contrato &middot; &Delta; = 0)</option>
+    <option value="dif">Con diferencia (&Delta; &ne; 0)</option>
+  </select>
+</div>
 <div class="tw"><table class="aoc">
  <thead>
   <tr><th class="grp" colspan="2">COLEGIO</th><th class="grp sep" colspan="4">PREESCOLAR (OC)</th><th class="grp sep" colspan="6">PRIMARIA (OC)</th><th class="grp sep" colspan="3">TOTALES</th></tr>
   <tr><th style="width:24px">#</th><th style="text-align:left;min-width:130px">Colegio</th>
-   <th class="sep" style="text-align:center;width:26px">3a</th><th style="text-align:center;width:26px">4a</th><th style="text-align:center;width:26px">5a</th><th style="text-align:center;width:30px">Pre&#8209;F</th>
+   <th class="sep" style="text-align:center;width:30px" title="Preescolar 3 a&ntilde;os">PE1</th><th style="text-align:center;width:30px" title="Preescolar 4 a&ntilde;os">PE2</th><th style="text-align:center;width:30px" title="Preescolar 5 a&ntilde;os">PE3</th><th style="text-align:center;width:32px">Pre&#8209;F</th>
    <th class="sep" style="text-align:center;width:24px">1&deg;</th><th style="text-align:center;width:24px">2&deg;</th><th style="text-align:center;width:24px">3&deg;</th><th style="text-align:center;width:24px">4&deg;</th><th style="text-align:center;width:24px">5&deg;</th><th style="text-align:center;width:24px">6&deg;</th>
    <th class="sep" style="text-align:center;width:52px">Contrato</th><th style="text-align:center;width:44px">OC</th><th style="text-align:center;width:40px">&Delta;</th></tr>
  </thead>
@@ -521,7 +529,7 @@ table.aoc td.z{color:#333c4b;}
  <thead>
   <tr><th class="grp" colspan="2">COLEGIO</th><th class="grp sep" colspan="4">PREESCOLAR (grupos)</th><th class="grp sep" colspan="6">PRIMARIA (grupos)</th><th class="grp sep" colspan="3">PROFESORES</th></tr>
   <tr><th style="width:24px">#</th><th style="text-align:left;min-width:130px">Colegio</th>
-   <th class="sep" style="text-align:center;width:26px">3a</th><th style="text-align:center;width:26px">4a</th><th style="text-align:center;width:26px">5a</th><th style="text-align:center;width:30px">Pre&#8209;F</th>
+   <th class="sep" style="text-align:center;width:30px" title="Preescolar 3 a&ntilde;os">PE1</th><th style="text-align:center;width:30px" title="Preescolar 4 a&ntilde;os">PE2</th><th style="text-align:center;width:30px" title="Preescolar 5 a&ntilde;os">PE3</th><th style="text-align:center;width:32px">Pre&#8209;F</th>
    <th class="sep" style="text-align:center;width:24px">1&deg;</th><th style="text-align:center;width:24px">2&deg;</th><th style="text-align:center;width:24px">3&deg;</th><th style="text-align:center;width:24px">4&deg;</th><th style="text-align:center;width:24px">5&deg;</th><th style="text-align:center;width:24px">6&deg;</th>
    <th class="sep" style="text-align:center;width:46px">Preesc.</th><th style="text-align:center;width:44px">Prim.</th><th style="text-align:center;width:44px">Total</th></tr>
  </thead>
@@ -894,6 +902,8 @@ function xRenderCSF(){
 function xRenderAlumnosOC(){
   var OCG=(window.LIV_OCG||{});
   var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
+  var fv=(document.getElementById('xliv-aocfilter')||{}).value||'';
+  if(fv){arr=arr.filter(function(c){var g=OCG[c.id]||[0,0,0,0,0,0,0,0,0,0];var ocT=g.reduce(function(a,b){return a+b;},0);var totC=(c.pe1||0)+(c.pe2||0)+(c.pe3||0)+(c.pf||0)+(c.pr1||0)+(c.pr2||0)+(c.pr3||0)+(c.pr4||0)+(c.pr5||0)+(c.pr6||0);return fv==='eq'?(ocT===totC):(ocT!==totC);});}
   var tb=document.getElementById('xliv-aoctbody'),tf=document.getElementById('xliv-aocfoot'); if(!tb)return; tb.innerHTML='';
   var sPE=[0,0,0],sPF=0,sPR=[0,0,0,0,0,0],sTC=0,sOC=0;
   // celda de grado con tono por nivel: lvl = 'pe' | 'pf' | 'pr'
@@ -1124,6 +1134,7 @@ render();
 .xliv-pane tbody tr td{border-left-color:#222838 !important;}
 #xliv-logistica table,#xliv-cobro table,#xliv-aula table,#xliv-oc table,#xliv-bonif table{min-width:0 !important;width:auto !important;}
 #xliv-logistica tbody td:nth-child(2),#xliv-cobro tbody td:nth-child(2),#xliv-aula tbody td:nth-child(2),#xliv-oc tbody td:nth-child(2),#xliv-bonif tbody td:nth-child(2){max-width:240px;overflow:hidden;text-overflow:ellipsis;}
+#xliv-bonif .tw,#xliv-cobro .tw,#xliv-aula .tw,#xliv-oc .tw{width:fit-content;max-width:100%;}
 </style>
 
 <script>
