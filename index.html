@@ -491,17 +491,25 @@ tr.sel td{background:#1a2035!important}
 </div>
 </div>
 <div id="xliv-alumnosoc" class="xliv-pane">
-<div style="padding:12px 24px 0;color:#8fd7ff;font-size:12px">&#128101; Alumnos por Orden de Compra &middot; colegios con OC completa. Desglose grado x grado seg&uacute;n contrato; <b>&Delta;</b> = total de alumnos de la OC vs contrato.</div>
-<div class="tw"><table>
+<div style="padding:12px 24px 0;color:#8fd7ff;font-size:12px">&#128101; Alumnos por Orden de Compra &middot; colegios con OC completa. Desglose grado x grado seg&uacute;n la <b>OC</b> (no el contrato); <b>&Delta;</b> = total de alumnos OC &minus; contrato.</div>
+<div class="tw"><table class="aoc">
  <thead>
-  <tr><th class="grp" colspan="2">COLEGIO</th><th class="grp sep" colspan="4">PREESCOLAR</th><th class="grp sep" colspan="6">PRIMARIA</th><th class="grp sep" colspan="3">TOTALES</th></tr>
-  <tr><th style="width:28px">#</th><th style="text-align:left;min-width:170px">Colegio</th>
-   <th class="sep" style="text-align:center">3a</th><th style="text-align:center">4a</th><th style="text-align:center">5a</th><th style="text-align:center">Pre-F</th>
-   <th class="sep" style="text-align:center">1&deg;</th><th style="text-align:center">2&deg;</th><th style="text-align:center">3&deg;</th><th style="text-align:center">4&deg;</th><th style="text-align:center">5&deg;</th><th style="text-align:center">6&deg;</th>
-   <th class="sep" style="text-align:center">Contrato</th><th style="text-align:center">Alumnos OC</th><th style="text-align:center">&Delta;</th></tr>
+  <tr><th class="grp" colspan="2">COLEGIO</th><th class="grp sep" colspan="4">PREESCOLAR (OC)</th><th class="grp sep" colspan="6">PRIMARIA (OC)</th><th class="grp sep" colspan="3">TOTALES</th></tr>
+  <tr><th style="width:24px">#</th><th style="text-align:left;min-width:130px">Colegio</th>
+   <th class="sep" style="text-align:center;width:26px">3a</th><th style="text-align:center;width:26px">4a</th><th style="text-align:center;width:26px">5a</th><th style="text-align:center;width:30px">Pre&#8209;F</th>
+   <th class="sep" style="text-align:center;width:24px">1&deg;</th><th style="text-align:center;width:24px">2&deg;</th><th style="text-align:center;width:24px">3&deg;</th><th style="text-align:center;width:24px">4&deg;</th><th style="text-align:center;width:24px">5&deg;</th><th style="text-align:center;width:24px">6&deg;</th>
+   <th class="sep" style="text-align:center;width:52px">Contrato</th><th style="text-align:center;width:44px">OC</th><th style="text-align:center;width:40px">&Delta;</th></tr>
  </thead>
  <tbody id="xliv-aoctbody"></tbody><tfoot id="xliv-aocfoot"></tfoot>
 </table></div>
+<style>
+table.aoc th,table.aoc td{padding-left:4px;padding-right:4px;}
+table.aoc td.g{text-align:center;font-size:11px;}
+table.aoc td.pe{color:#77aecc;}
+table.aoc td.pf{color:#b199db;}
+table.aoc td.pr{color:#7fb391;}
+table.aoc td.z{color:#333c4b;}
+</style>
 </div>
 <div class="dp" id="dp">
   <div style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -517,6 +525,7 @@ tr.sel td{background:#1a2035!important}
 <div class="footer">LIV · Dashboard operativo · Ciclo 2026 · 🔒 = pendiente firma colegio · Clic en fila para detalle completo</div>
 <script>document.write('<script src="datos.js?v=' + Date.now() + '"><\/script>');</script>
 <script>document.write('<script src="csf.js?v=' + Date.now() + '"><\/script>');</script>
+<script>document.write('<script src="ocgrades.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
 const C=(window.LIV_C||[]);
 
@@ -865,20 +874,24 @@ function xRenderCSF(){
 }
 
 function xRenderAlumnosOC(){
+  var OCG=(window.LIV_OCG||{});
   var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
   var tb=document.getElementById('xliv-aoctbody'),tf=document.getElementById('xliv-aocfoot'); if(!tb)return; tb.innerHTML='';
   var sPE=[0,0,0],sPF=0,sPR=[0,0,0,0,0,0],sTC=0,sOC=0;
-  function cell(v,sep){return '<td'+(sep?' class="sep"':'')+' style="text-align:center;color:#c8cdd8">'+(v?v:'<span style=\'color:#3a4150\'>&ndash;</span>')+'</td>';}
+  // celda de grado con tono por nivel: lvl = 'pe' | 'pf' | 'pr'
+  function cell(v,lvl,sep){return '<td class="g '+(v?lvl:'z')+(sep?' sep':'')+'">'+(v?v:'&ndash;')+'</td>';}
   arr.forEach(function(c,i){
-    var pe=[c.pe1||0,c.pe2||0,c.pe3||0],pf=c.pf||0,pr=[c.pr1||0,c.pr2||0,c.pr3||0,c.pr4||0,c.pr5||0,c.pr6||0];
-    var totC=pe[0]+pe[1]+pe[2]+pf+pr[0]+pr[1]+pr[2]+pr[3]+pr[4]+pr[5];
-    var ocT=(c.ocpe||0)+(c.ocpr||0); var d=ocT-totC;
+    var g=OCG[c.id]||[0,0,0,0,0,0,0,0,0,0];
+    var pe=[g[0],g[1],g[2]],pf=g[3],pr=[g[4],g[5],g[6],g[7],g[8],g[9]];      // alumnos OC por grado
+    var ocT=pe[0]+pe[1]+pe[2]+pf+pr[0]+pr[1]+pr[2]+pr[3]+pr[4]+pr[5];        // total OC
+    var totC=(c.pe1||0)+(c.pe2||0)+(c.pe3||0)+(c.pf||0)+(c.pr1||0)+(c.pr2||0)+(c.pr3||0)+(c.pr4||0)+(c.pr5||0)+(c.pr6||0); // total contrato
+    var d=ocT-totC;
     for(var k=0;k<3;k++)sPE[k]+=pe[k]; sPF+=pf; for(var k=0;k<6;k++)sPR[k]+=pr[k]; sTC+=totC; sOC+=ocT;
-    var dc=d>0?'#34d399':(d<0?'#e06a6a':'#8893a8'); var dt=(d>0?'+':'')+d;
+    var dc=d>0?'#4bbf87':(d<0?'#d07a7a':'#8893a8'); var dt=(d>0?'+':'')+d;
     tb.innerHTML+='<tr>'
       +'<td style="color:#555e70;text-align:center;font-size:10px">'+(i+1)+'</td>'
       +'<td style="color:#e8edf5;font-weight:600;text-align:left">'+c.n+'</td>'
-      +cell(pe[0],1)+cell(pe[1])+cell(pe[2])+cell(pf)+cell(pr[0],1)+cell(pr[1])+cell(pr[2])+cell(pr[3])+cell(pr[4])+cell(pr[5])
+      +cell(pe[0],'pe',1)+cell(pe[1],'pe')+cell(pe[2],'pe')+cell(pf,'pf')+cell(pr[0],'pr',1)+cell(pr[1],'pr')+cell(pr[2],'pr')+cell(pr[3],'pr')+cell(pr[4],'pr')+cell(pr[5],'pr')
       +'<td class="sep" style="text-align:center;color:#9fb2c8;font-weight:600">'+totC+'</td>'
       +'<td style="text-align:center;color:#5bc4f5;font-weight:700">'+ocT+'</td>'
       +'<td style="text-align:center;color:'+dc+';font-weight:700">'+dt+'</td></tr>';
