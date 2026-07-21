@@ -305,7 +305,7 @@ tr.sel td{background:#1a2035!important}
   <div class="kpi"><div class="kpi-lbl">Preescolar</div><div class="kpi-val" id="kpe">—</div><div class="kpi-sub" id="kpep">—</div></div>
   <div class="kpi"><div class="kpi-lbl">Pre-First</div><div class="kpi-val" id="kpfr">—</div><div class="kpi-sub" id="kpfrp">—</div></div>
   <div class="kpi"><div class="kpi-lbl">Primaria</div><div class="kpi-val" id="kpr">—</div><div class="kpi-sub" id="kprp">—</div></div>
-  <div class="kpi"><div class="kpi-lbl">Pend. firma</div><div class="kpi-val" id="kpf" style="color:#ffa94d">—</div><div class="kpi-sub">🔒 sin firma colegio</div></div><div class="kpi" style="border-color:#e0a83088;cursor:pointer" onclick="xFocSinOC()" title="Ver colegios firmados sin Orden de Compra"><div class="kpi-lbl" style="color:#e0a830">Sin OC</div><div class="kpi-val" id="ksinoc" style="color:#e0a830">—</div><div class="kpi-sub">📋 firmados sin orden</div></div>
+  <div class="kpi" style="border-color:#e0a83088;cursor:pointer" onclick="xFocSinOC()" title="Ver colegios firmados sin Orden de Compra"><div class="kpi-lbl" style="color:#e0a830">Sin OC</div><div class="kpi-val" id="ksinoc" style="color:#e0a830">—</div><div class="kpi-sub">📋 firmados sin orden</div></div>
   <div class="kpi" style="border-color:#2ecc71aa"><div class="kpi-lbl" style="color:#2ecc71">Cartera en USD</div><div class="kpi-val" id="kusd" style="color:#2ecc71;font-size:16px">—</div><div class="kpi-sub" id="kfx">FIX 17.3213 MXN/USD</div></div>
   <div class="kpi" style="border-color:#2ecc71aa"><div class="kpi-lbl" style="color:#2ecc71">Costo/alumno USD</div><div class="kpi-val" id="kusdal" style="color:#2ecc71;font-size:16px">—</div><div class="kpi-sub">promedio ponderado</div></div>
 </div>
@@ -690,7 +690,7 @@ function render(){
   const allAlum=list.reduce((s,c)=>s+gtot(c),0);
   const avgUsd=allAlum>0?(allM/allAlum)/FX:0;
   document.getElementById('kusdal').textContent='US$ '+avgUsd.toFixed(2);
-  document.getElementById('kpf').textContent=tPF;var _soc=document.getElementById('ksinoc');if(_soc)_soc.textContent=C.filter(function(c){return c.f&&!(c.occ===1||c.ocpe!=null||c.ocpr!=null);}).length;
+  var _kpf=document.getElementById('kpf');if(_kpf)_kpf.textContent=tPF;var _soc=document.getElementById('ksinoc');if(_soc)_soc.textContent=C.filter(function(c){return c.f&&!(c.occ===1||c.ocpe!=null||c.ocpr!=null);}).length;
   ['nombre','estado','ciudad','total','pe','pr','precio','monto'].forEach(f=>{
     const el=document.getElementById('si-'+f);if(el)el.textContent=si(f);
   });
