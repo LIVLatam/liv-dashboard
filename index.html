@@ -965,12 +965,19 @@ function xExportar(){
   var tab=document.getElementById('xliv-v').value;
   if(fmt==='pdf') xExpPDF(tab); else xExpCSV(tab);
 }
-function xExpPDF(tab){
+function xExpRender(tab){
   if(tab==='xliv-logistica') xRenderLog();
   if(tab==='xliv-cobro') xRenderCobro();
   if(tab==='xliv-aula') xRenderAula();
+  if(tab==='xliv-bonif') xRenderBonif();
+  if(tab==='xliv-csf') xRenderCSF();
+  if(tab==='xliv-alumnosoc') xRenderAlumnosOC();
+  if(tab==='xliv-profesoresoc') xRenderProfesoresOC();
+}
+function xExpPDF(tab){
+  xExpRender(tab);
   // Setear título del header de print
-  var tabNames={'xliv-contratos':'Alumnos x contrato','xliv-logistica':'Logística','xliv-cobro':'Cobro','xliv-aula':'Aula LIV'};
+  var tabNames={'xliv-contratos':'Alumnos x contrato','xliv-logistica':'Logística','xliv-cobro':'Cobro','xliv-aula':'Aula LIV','xliv-bonif':'Bonificaciones','xliv-csf':'CSF','xliv-alumnosoc':'Alumnos OC','xliv-profesoresoc':'Profesores OC','xliv-oc':'OC'};
   var titleEl=document.getElementById('xliv-print-title');
   var dateEl=document.getElementById('xliv-print-date');
   if(titleEl) titleEl.textContent='Dashboard Lucas Doberti · '+(tabNames[tab]||'Reporte');
@@ -980,24 +987,67 @@ function xExpPDF(tab){
   var t=document.getElementById(tab);
   if(t){ t.classList.add('xp'); window.print(); t.classList.remove('xp'); }
 }
-function xExpCSV(tab){
-  var bmap={'xliv-contratos':'tbody','xliv-logistica':'xliv-ltbody','xliv-cobro':'xliv-ctbody','xliv-aula':'xliv-aultbody'};
-  var bid=bmap[tab]||'tbody';
-  if(tab==='xliv-logistica') xRenderLog();
-  if(tab==='xliv-cobro') xRenderCobro();
-  if(tab==='xliv-aula') xRenderAula();
-  var tbl=document.getElementById(bid);
-  if(!tbl) return;
-  tbl=tbl.closest('table');
-  var ths=Array.from(tbl.querySelectorAll('thead tr:last-child th')).map(function(th){return '"'+th.innerText.replace(/[\u21C5\u25B2\u25BC]/g,'').trim()+'"';});
-  var rows=[ths.join(',')];
-  Array.from(document.getElementById(bid).querySelectorAll('tr')).forEach(function(tr){
-    rows.push(Array.from(tr.querySelectorAll('td')).map(function(td){return '"'+td.innerText.replace(/"/g,'""').trim()+'"';}).join(','));
-  });
+function xCsvDown(tab,rows){
   var a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob(['\uFEFF'+rows.join('\n')],{type:'text/csv;charset=utf-8'}));
   a.download='LIV_'+tab.replace('xliv-','')+'_'+new Date().toLocaleDateString('es-MX').replace(/\//g,'-')+'.csv';
   a.click();
+}
+function xQ(v){return '"'+String(v).replace(/"/g,'""')+'"';}
+/* Alumnos OC y Profesores OC se exportan desde los DATOS (no del DOM):
+   as\u00ED salen n\u00FAmeros reales (0 en vez de "\u2013") y quedan listos para sumar en Excel. */
+function xExpCSVOC(tab){
+  var prof=(tab==='xliv-profesoresoc');
+  var SRC=prof?(window.LIV_OCGRP||{}):(window.LIV_OCG||{});
+  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
+  function contrato(c){return (c.pe1||0)+(c.pe2||0)+(c.pe3||0)+(c.pf||0)+(c.pr1||0)+(c.pr2||0)+(c.pr3||0)+(c.pr4||0)+(c.pr5||0)+(c.pr6||0);}
+  if(!prof){
+    var fv=(document.getElementById('xliv-aocfilter')||{}).value||'';
+    if(fv) arr=arr.filter(function(c){var g=SRC[c.id]||[0,0,0,0,0,0,0,0,0,0];var t=g.reduce(function(a,b){return a+b;},0);return fv==='eq'?(t===contrato(c)):(t!==contrato(c));});
+  }
+  var gradeH=['PE1 (3 a\u00F1os)','PE2 (4 a\u00F1os)','PE3 (5 a\u00F1os)','Pre-First','PR 1\u00BA','PR 2\u00BA','PR 3\u00BA','PR 4\u00BA','PR 5\u00BA','PR 6\u00BA'];
+  var head=['#','Colegio'].concat(gradeH).concat(prof
+      ?['Profesores Preescolar','Profesores Primaria','Total profesores']
+      :['Alumnos contrato','Alumnos OC','\u0394 (OC \u2212 contrato)']);
+  var rows=[head.map(xQ).join(',')];
+  var s=new Array(10).fill(0), sA=0,sB=0,sC=0;
+  arr.forEach(function(c,i){
+    var g=SRC[c.id]||[0,0,0,0,0,0,0,0,0,0];
+    for(var k=0;k<10;k++) s[k]+=g[k];
+    var a,b,d;
+    if(prof){ a=g[0]+g[1]+g[2]+g[3]; b=g[4]+g[5]+g[6]+g[7]+g[8]+g[9]; d=a+b; }
+    else{ a=contrato(c); b=g.reduce(function(x,y){return x+y;},0); d=b-a; }
+    sA+=a; sB+=b; sC+=d;
+    rows.push([i+1,xQ(c.n)].concat(g).concat([a,b,d]).join(','));
+  });
+  rows.push([xQ(''),xQ('TOTAL ('+arr.length+' colegios)')].concat(s).concat([sA,sB,sC]).join(','));
+  xCsvDown(tab,rows);
+}
+function xExpCSV(tab){
+  if(tab==='xliv-alumnosoc'||tab==='xliv-profesoresoc'){ xExpCSVOC(tab); return; }
+  xExpRender(tab);
+  // Tomar los tbody de la pesta\u00F1a elegida (no la tabla principal por defecto)
+  var pane=document.getElementById(tab);
+  var tbs=(tab==='xliv-contratos')?[document.getElementById('tbody')]
+        :(pane?Array.from(pane.querySelectorAll('tbody')):[]);
+  tbs=tbs.filter(function(t){return t;});
+  if(!tbs.length) return;
+  var secName={'xliv-csf-si':'S\u00CD compartieron CSF','xliv-csf-no':'Falta CSF'};
+  var rows=[];
+  tbs.forEach(function(tb,ix){
+    if(ix) rows.push('');
+    if(tbs.length>1 && secName[tb.id]) rows.push(xQ(secName[tb.id]));
+    var tbl=tb.closest('table');
+    rows.push(Array.from(tbl.querySelectorAll('thead tr:last-child th')).map(function(th){
+      return xQ(th.innerText.replace(/[\u21C5\u25B2\u25BC]/g,'').trim());
+    }).join(','));
+    Array.from(tb.querySelectorAll('tr')).forEach(function(tr){
+      rows.push(Array.from(tr.querySelectorAll('td')).map(function(td){
+        return xQ(td.innerText.replace(/\u2013|\u2014/g,'').trim());
+      }).join(','));
+    });
+  });
+  xCsvDown(tab,rows);
 }
 
 renderLegend();
