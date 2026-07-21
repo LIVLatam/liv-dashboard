@@ -303,6 +303,7 @@ tr.sel td{background:#1a2035!important}
   <div class="kpi"><div class="kpi-lbl">Colegios</div><div class="kpi-val" id="kc">—</div><div class="kpi-sub">en vista actual</div></div>
   <div class="kpi"><div class="kpi-lbl">Alumnos vigentes</div><div class="kpi-val" id="ka">—</div><div class="kpi-sub">en vista actual</div></div>
   <div class="kpi"><div class="kpi-lbl">Preescolar</div><div class="kpi-val" id="kpe">—</div><div class="kpi-sub" id="kpep">—</div></div>
+  <div class="kpi"><div class="kpi-lbl">Pre-First</div><div class="kpi-val" id="kpfr">—</div><div class="kpi-sub" id="kpfrp">—</div></div>
   <div class="kpi"><div class="kpi-lbl">Primaria</div><div class="kpi-val" id="kpr">—</div><div class="kpi-sub" id="kprp">—</div></div>
   <div class="kpi"><div class="kpi-lbl">Pend. firma</div><div class="kpi-val" id="kpf" style="color:#ffa94d">—</div><div class="kpi-sub">🔒 sin firma colegio</div></div><div class="kpi" style="border-color:#e0a83088;cursor:pointer" onclick="xFocSinOC()" title="Ver colegios firmados sin Orden de Compra"><div class="kpi-lbl" style="color:#e0a830">Sin OC</div><div class="kpi-val" id="ksinoc" style="color:#e0a830">—</div><div class="kpi-sub">📋 firmados sin orden</div></div>
   <div class="kpi" style="border-color:#2ecc71aa"><div class="kpi-lbl" style="color:#2ecc71">Cartera en USD</div><div class="kpi-val" id="kusd" style="color:#2ecc71;font-size:16px">—</div><div class="kpi-sub" id="kfx">FIX 17.3213 MXN/USD</div></div>
@@ -617,12 +618,12 @@ function render(){
   const list=getFiltered();
   const tbody=document.getElementById('tbody');
   tbody.innerHTML='';
-  let tA=0,tPE=0,tPR=0,tM=0,t1e=0,t2e=0,t3e=0,t1r=0,t2r=0,t3r=0,t4r=0,t5r=0,t6r=0,tPF=0,tPreF=0,tDpe=0,tDpr=0,tMc=0,tAvig=0,tPEvig=0,tPRvig=0;
+  let tA=0,tPE=0,tPR=0,tM=0,t1e=0,t2e=0,t3e=0,t1r=0,t2r=0,t3r=0,t4r=0,t5r=0,t6r=0,tPF=0,tPreF=0,tDpe=0,tDpr=0,tMc=0,tAvig=0,tPEvig=0,tPRvig=0,tPFvig=0;
   list.forEach((c,i)=>{
     const pev=gpe(c),prv=gpr(c),tv=gtot(c);
     const _hasOC=(c.occ===1||c.ocpe!=null||c.ocpr!=null);
     const peVig=(c.ocpe!=null?c.ocpe:pev),prVig=(c.ocpr!=null?c.ocpr:prv),tvig=_hasOC?(peVig+prVig):tv;
-    tA+=tv;tPE+=pev;tPR+=prv;tM+=c.m;tPreF+=gpf(c);tMc+=(c.mc!=null?c.mc:c.m);tAvig+=tvig;tPEvig+=peVig;tPRvig+=prVig;
+    tA+=tv;tPE+=pev;tPR+=prv;tM+=c.m;tPreF+=gpf(c);tMc+=(c.mc!=null?c.mc:c.m);tAvig+=tvig;tPEvig+=peVig;tPRvig+=prVig;tPFvig+=(_hasOC?0:gpf(c));
     t1e+=c.pe1;t2e+=c.pe2;t3e+=c.pe3;
     t1r+=c.pr1;t2r+=c.pr2;t3r+=c.pr3;t4r+=c.pr4;t5r+=c.pr5;t6r+=c.pr6;
     if(!c.f)tPF++;
@@ -679,6 +680,7 @@ function render(){
   document.getElementById('kpep').textContent=tAvig?Math.round(tPEvig/tAvig*100)+'% del total':'--';
   document.getElementById('kpr').textContent=tPRvig.toLocaleString();
   document.getElementById('kprp').textContent=tAvig?Math.round(tPRvig/tAvig*100)+'% del total':'--';
+  var _kpfr=document.getElementById('kpfr');if(_kpfr){_kpfr.textContent=tPFvig.toLocaleString();document.getElementById('kpfrp').textContent=tAvig?Math.round(tPFvig/tAvig*100)+'% del total':'--';}
   var _km=document.getElementById('km'); if(_km)_km.textContent=fmt(tM);
   const FX=17.3213;
   const tMusd=tM/FX;
