@@ -623,7 +623,7 @@ function render(){
     const pev=gpe(c),prv=gpr(c),tv=gtot(c);
     const _hasOC=(c.occ===1||c.ocpe!=null||c.ocpr!=null);
     const peVig=(c.ocpe!=null?c.ocpe:pev),prVig=(c.ocpr!=null?c.ocpr:prv),tvig=_hasOC?(peVig+prVig):tv;
-    tA+=tv;tPE+=pev;tPR+=prv;tM+=c.m;tPreF+=gpf(c);tMc+=(c.mc!=null?c.mc:c.m);tAvig+=tvig;tPEvig+=peVig;tPRvig+=prVig;tPFvig+=(_hasOC?0:gpf(c));
+    tA+=tv;tPE+=pev;tPR+=prv;tM+=c.m;tPreF+=gpf(c);tMc+=(c.mc!=null?c.mc:c.m);tAvig+=tvig;tPEvig+=peVig;tPRvig+=prVig;tPFvig+=(function(){var _o=(window.LIV_OCG||{})[c.id];return _o?(_o[3]||0):gpf(c);})();
     t1e+=c.pe1;t2e+=c.pe2;t3e+=c.pe3;
     t1r+=c.pr1;t2r+=c.pr2;t3r+=c.pr3;t4r+=c.pr4;t5r+=c.pr5;t6r+=c.pr6;
     if(!c.f)tPF++;
