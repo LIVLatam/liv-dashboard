@@ -912,9 +912,10 @@ function xRenderAlumnosOC(){
   // celda de grado con tono por nivel: lvl = 'pe' | 'pf' | 'pr'
   function cell(v,lvl,sep){return '<td class="g '+(v?lvl:'z')+(sep?' sep':'')+'">'+(v?v:'&ndash;')+'</td>';}
   arr.forEach(function(c,i){
+    var hasG=!!OCG[c.id];
     var g=OCG[c.id]||[0,0,0,0,0,0,0,0,0,0];
     var pe=[g[0],g[1],g[2]],pf=g[3],pr=[g[4],g[5],g[6],g[7],g[8],g[9]];      // alumnos OC por grado
-    var ocT=pe[0]+pe[1]+pe[2]+pf+pr[0]+pr[1]+pr[2]+pr[3]+pr[4]+pr[5];        // total OC
+    var ocT=hasG?(pe[0]+pe[1]+pe[2]+pf+pr[0]+pr[1]+pr[2]+pr[3]+pr[4]+pr[5]):((c.ocpe||0)+(c.ocpr||0)); // total OC (por grado si hay; si no, totales por nivel)
     var totC=(c.pe1||0)+(c.pe2||0)+(c.pe3||0)+(c.pf||0)+(c.pr1||0)+(c.pr2||0)+(c.pr3||0)+(c.pr4||0)+(c.pr5||0)+(c.pr6||0); // total contrato
     var d=ocT-totC;
     for(var k=0;k<3;k++)sPE[k]+=pe[k]; sPF+=pf; for(var k=0;k<6;k++)sPR[k]+=pr[k]; sTC+=totC; sOC+=ocT;
