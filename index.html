@@ -636,12 +636,12 @@ function render(){
     const h='<td style="color:#555e70;text-align:center;font-size:10px">'+(i+1)+'</td>'
       +'<td style="color:#e8edf5;font-weight:600">'+c.n+lk+'</td>'
       +'<td class="sep" style="font-weight:800;text-align:center;font-size:14px">'+tv+'</td>'
-      +'<td style="font-weight:700;text-align:center;color:#5bc4f5">'+pev+'</td>'
+      +'<td style="font-weight:700;text-align:center;color:#5bc4f5!important">'+pev+'</td>'
       +'<td style="color:#7b6fa0;text-align:center">'+c.pe1+'</td>'
       +'<td style="color:#7b6fa0;text-align:center">'+c.pe2+'</td>'
       +'<td class="sep" style="color:#7b6fa0;text-align:center">'+c.pe3+'</td>'
       +'<td class="sep" style="color:#e0a830;font-weight:700;text-align:center">'+(c.pf>0?c.pf:'—')+'</td>'
-      +'<td style="font-weight:700;text-align:center;color:#34d399">'+prv+'</td>'
+      +'<td style="font-weight:700;text-align:center;color:#34d399!important">'+prv+'</td>'
       +'<td style="color:#2a9e72;text-align:center">'+c.pr1+'</td>'
       +'<td style="color:#2a9e72;text-align:center">'+c.pr2+'</td>'
       +'<td style="color:#2a9e72;text-align:center">'+c.pr3+'</td>'
@@ -925,7 +925,7 @@ function xRenderAlumnosOC(){
       +'<td style="color:#555e70;text-align:center;font-size:10px">'+(i+1)+'</td>'
       +'<td style="color:#e8edf5;font-weight:600;text-align:left">'+c.n+'</td>'
       +cell(pe[0],'pe',1)+cell(pe[1],'pe')+cell(pe[2],'pe')+cell(pf,'pf')+cell(pr[0],'pr',1)+cell(pr[1],'pr')+cell(pr[2],'pr')+cell(pr[3],'pr')+cell(pr[4],'pr')+cell(pr[5],'pr')
-      +'<td class="sep" style="text-align:center;color:#5bc4f5;font-weight:800">'+(pe[0]+pe[1]+pe[2])+'</td>'+'<td style="text-align:center;color:#34d399;font-weight:800">'+(pr[0]+pr[1]+pr[2]+pr[3]+pr[4]+pr[5])+'</td>'+'<td style="text-align:center;color:#9fb2c8;font-weight:600">'+totC+'</td>'
+      +'<td class="sep" style="text-align:center;color:#5bc4f5!important;font-weight:800">'+(pe[0]+pe[1]+pe[2])+'</td>'+'<td style="text-align:center;color:#34d399!important;font-weight:800">'+(pr[0]+pr[1]+pr[2]+pr[3]+pr[4]+pr[5])+'</td>'+'<td style="text-align:center;color:#9fb2c8;font-weight:600">'+totC+'</td>'
       +'<td style="text-align:center;color:#5bc4f5;font-weight:700">'+ocT+'</td>'
       +'<td style="text-align:center;color:'+dc+';font-weight:700">'+dt+'</td></tr>';
   });
@@ -933,7 +933,7 @@ function xRenderAlumnosOC(){
   if(tf) tf.innerHTML='<tr class="xliv-tfoot"><td></td><td style="text-align:left;color:#4a7fa5;font-weight:700">TOTAL ('+arr.length+' con OC)</td>'
     +'<td class="sep" style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[0]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[1]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPE[2]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPF+'</td>'
     +'<td class="sep" style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[0]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[1]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[2]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[3]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[4]+'</td><td style="text-align:center;color:#9fb2c8;font-weight:700">'+sPR[5]+'</td>'
-    +'<td class="sep" style="text-align:center;color:#5bc4f5;font-weight:800">'+(sPE[0]+sPE[1]+sPE[2])+'</td>'+'<td style="text-align:center;color:#34d399;font-weight:800">'+(sPR[0]+sPR[1]+sPR[2]+sPR[3]+sPR[4]+sPR[5])+'</td>'+'<td style="text-align:center;color:#e8edf5;font-weight:800">'+sTC+'</td><td style="text-align:center;color:#5bc4f5;font-weight:800">'+sOC+'</td><td style="text-align:center;color:'+dTc+';font-weight:800">'+(dT>0?'+':'')+dT+'</td></tr>';
+    +'<td class="sep" style="text-align:center;color:#5bc4f5!important;font-weight:800">'+(sPE[0]+sPE[1]+sPE[2])+'</td>'+'<td style="text-align:center;color:#34d399!important;font-weight:800">'+(sPR[0]+sPR[1]+sPR[2]+sPR[3]+sPR[4]+sPR[5])+'</td>'+'<td style="text-align:center;color:#e8edf5;font-weight:800">'+sTC+'</td><td style="text-align:center;color:#5bc4f5;font-weight:800">'+sOC+'</td><td style="text-align:center;color:'+dTc+';font-weight:800">'+(dT>0?'+':'')+dT+'</td></tr>';
   [].forEach.call(tb.children,function(tr,ix){tr.style.cursor='pointer';tr.onclick=function(){toggleDetail(arr[ix]);};});
   var b=document.querySelector('.xliv-tab-btn[data-pane="xliv-alumnosoc"]');
   if(b) b.innerHTML='&#128101; Alumnos OC <span style="background:#5bc4f5;color:#08131c;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+arr.length+'</span>';
