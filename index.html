@@ -281,7 +281,7 @@ tr.sel td{background:#1a2035!important}
     <div>
       <div class="hdr-sub">Laboratorio Inteligencia de Vida · México</div>
       <h1 class="hdr-h1">Dashboard Lucas Doberti</h1>
-      <div class="hdr-meta">Ciclo 2026 · <b id="hdr-n" style="color:#e8edf5">26</b> colegios · <span style="color:#ffa94d">🔒 pendiente firma colegio</span></div>
+      <div class="hdr-meta">Ciclo 2026 · <b id="hdr-n" style="color:#e8edf5">26</b> planteles · <b id="hdr-inst" style="color:#8fd7ff">—</b> instituciones · <span style="color:#ffa94d">🔒 pendiente firma colegio</span></div>
     </div>
   </div>
   <div>
@@ -300,7 +300,7 @@ tr.sel td{background:#1a2035!important}
 <div class="legend" id="legend"></div>
 <div id="xliv-c1" style="margin:0 0 14px 0;background:#0f131b;border:1px solid #1e2230;border-radius:10px;padding:12px 14px"><div style="font-size:9px;color:#4a7fa5;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-weight:700">&#128202; Operación &middot; Campaña 1 (año 1, cartera completa)</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><div style="background:#131720;border:1px solid #1e2230;border-left:3px solid #2ecc71;border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:#4a7fa5;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Facturación año 1</div><div style="font-size:21px;font-weight:700;color:#e8edf5" id="xliv-fact">—</div><div style="font-size:10px;color:#555e70;margin-top:3px" id="xliv-factusd">—</div></div><div style="background:#131720;border:1px solid #1e2230;border-left:3px solid #4a7fa5;border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:#4a7fa5;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Alumnos pagantes</div><div style="font-size:21px;font-weight:700;color:#e8edf5" id="xliv-pag">—</div><div style="font-size:10px;color:#555e70;margin-top:3px">de <span id="xliv-totstud">—</span> totales</div></div><div style="background:#131720;border:1px solid #1e2230;border-left:3px solid #e0a23b;border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:#4a7fa5;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Ticket por pagante</div><div style="font-size:21px;font-weight:700;color:#e8edf5" id="xliv-tk">—</div><div style="font-size:10px;color:#555e70;margin-top:3px" id="xliv-tkusd">—</div></div><div style="background:#131720;border:1px solid #1e2230;border-left:3px solid #9b59b6;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .2s" id="xliv-grat-card" title="Ver detalle de los alumnos bonificados" onmouseover="this.style.borderColor='#9b59b6'" onmouseout="this.style.borderColor='#1e2230'"><div style="font-size:9px;color:#4a7fa5;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Gratis año 1</div><div style="font-size:21px;font-weight:700;color:#e8edf5" id="xliv-grat">—</div><div style="font-size:10px;color:#555e70;margin-top:3px">&#128072; clic para ver el detalle</div></div></div></div>
 <div class="kpis">
-  <div class="kpi"><div class="kpi-lbl">Colegios</div><div class="kpi-val" id="kc">—</div><div class="kpi-sub">en vista actual</div></div>
+  <div class="kpi" title="Un plantel = una sede. Varios planteles de una misma red cuentan como una sola institución."><div class="kpi-lbl">Planteles</div><div class="kpi-val" id="kc">—</div><div class="kpi-sub"><b id="kinst" style="color:#8fd7ff">—</b> instituciones · en vista actual</div></div>
   <div class="kpi"><div class="kpi-lbl">Alumnos vigentes</div><div class="kpi-val" id="ka">—</div><div class="kpi-sub">en vista actual</div></div>
   <div class="kpi"><div class="kpi-lbl">Preescolar</div><div class="kpi-val" id="kpe">—</div><div class="kpi-sub" id="kpep">—</div></div>
   <div class="kpi"><div class="kpi-lbl">Pre-First</div><div class="kpi-val" id="kpfr">—</div><div class="kpi-sub" id="kpfrp">—</div></div>
@@ -676,6 +676,7 @@ function render(){
     +'<td style="color:#5bc4f5;font-weight:700;text-align:right;font-family:\'DM Mono\',monospace">'+fmt(tMc)+'</td>'
     +'<td class="sep"></td>'+difTdVal(tDpe)+difTdVal(tDpr)+difTdVal(tDpe+tDpr)+'</tr>';
   document.getElementById('kc').textContent=list.length;
+  document.getElementById('kinst').textContent=xInst(list);
   document.getElementById('ka').textContent=tAvig.toLocaleString();
   document.getElementById('kpe').textContent=tPEvig.toLocaleString();
   document.getElementById('kpep').textContent=tAvig?Math.round(tPEvig/tAvig*100)+'% del total':'--';
@@ -727,11 +728,13 @@ function toggleDetail(c){
   render();
 }
 function closeDetail(){selId=null;document.getElementById('dp').classList.remove('vis');render();}
+function xInst(arr){return new Set(arr.map(c=>c.red||('#'+c.id))).size;}
 const totalMXN=C.reduce((s,c)=>s+c.m,0);
 document.getElementById('gran-total').textContent=fmt(totalMXN);
 document.getElementById('gran-total-usd').textContent='≈ US$ '+Math.round(totalMXN/17.3213).toLocaleString('es-MX');
 document.getElementById('gran-alumnos').textContent=C.reduce((s,c)=>s+((c.occ===1||c.ocpe!=null||c.ocpr!=null)?((c.ocpe!=null?c.ocpe:gpe(c))+(c.ocpr!=null?c.ocpr:gpr(c))+((window.LIV_OCG||{})[c.id]?((window.LIV_OCG||{})[c.id][3]||0):gpf(c))):gtot(c)),0).toLocaleString()+' alumnos en total';
 document.getElementById('hdr-n').textContent=C.length;
+document.getElementById('hdr-inst').textContent=xInst(C);
 [...new Set(C.map(c=>c.es))].sort().forEach(e=>{
   const o=document.createElement('option');o.value=e;o.textContent=e;document.getElementById('fes').appendChild(o);
 });
