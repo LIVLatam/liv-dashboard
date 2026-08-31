@@ -2,7 +2,7 @@
    Clave = id de LIV_C. Orden del array: [PE3, PE4, PE5, PreFirst, PR1, PR2, PR3, PR4, PR5, PR6].
    Fuente: PDFs de OC en Drive "Ordenes de compra". Generado 20/07/2026. */
 window.LIV_OCG={
-"63":[34,41,39,0,54,47,59,44,68,64],
+"63":[37,36,75,0,54,47,59,44,68,64],
 "1":[10,22,25,0,30,40,41,42,46,55],
 "2":[2,2,0,0,3,5,14,13,5,11],
 "3":[24,26,26,0,33,41,39,16,32,29],
@@ -68,7 +68,7 @@ window.LIV_OCG={
 /* GRUPOS por grado según la OC (columna "Grupos"). 1 grupo = 1 profesor.
    Mismo orden: [PE3, PE4, PE5, PreFirst, PR1, PR2, PR3, PR4, PR5, PR6]. */
 window.LIV_OCGRP={
-"63":[2,2,2,0,2,2,3,2,3,3],
+"63":[2,2,4,0,2,2,3,2,3,3],
 "1":[1,1,1,0,2,2,2,2,2,2],
 "2":[1,1,0,0,1,1,1,1,1,1],
 "3":[2,2,2,0,2,2,2,1,2,2],
