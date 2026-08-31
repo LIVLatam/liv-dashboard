@@ -911,7 +911,7 @@ function xRenderCSF(){
 
 function xRenderAlumnosOC(){
   var OCG=(window.LIV_OCG||{});
-  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
+  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){var G=window.LIV_OCG||{};function t(c){var g=G[c.id];return g?g.reduce(function(x,y){return x+y;},0):((c.ocpe||0)+(c.ocpr||0));}return t(b)-t(a);});
   var fv=(document.getElementById('xliv-aocfilter')||{}).value||'';
   if(fv){arr=arr.filter(function(c){var g=OCG[c.id]||[0,0,0,0,0,0,0,0,0,0];var ocT=g.reduce(function(a,b){return a+b;},0);var totC=(c.pe1||0)+(c.pe2||0)+(c.pe3||0)+(c.pf||0)+(c.pr1||0)+(c.pr2||0)+(c.pr3||0)+(c.pr4||0)+(c.pr5||0)+(c.pr6||0);return fv==='eq'?(ocT===totC):(ocT!==totC);});}
   var tb=document.getElementById('xliv-aoctbody'),tf=document.getElementById('xliv-aocfoot'); if(!tb)return; tb.innerHTML='';
@@ -947,7 +947,7 @@ function xRenderAlumnosOC(){
 
 function xRenderProfesoresOC(){
   var GR=(window.LIV_OCGRP||{});
-  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
+  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){var G=window.LIV_OCG||{};function t(c){var g=G[c.id];return g?g.reduce(function(x,y){return x+y;},0):((c.ocpe||0)+(c.ocpr||0));}return t(b)-t(a);});
   var tb=document.getElementById('xliv-poctbody'),tf=document.getElementById('xliv-pocfoot'); if(!tb)return; tb.innerHTML='';
   var sPE=[0,0,0],sPF=0,sPR=[0,0,0,0,0,0],sTPE=0,sTPR=0,sT=0;
   function cell(v,lvl,sep){return '<td class="g '+(v?lvl:'z')+(sep?' sep':'')+'">'+(v?v:'&ndash;')+'</td>';}
@@ -1011,7 +1011,7 @@ function xQ(v){return '"'+String(v).replace(/"/g,'""')+'"';}
 function xExpCSVOC(tab){
   var prof=(tab==='xliv-profesoresoc');
   var SRC=prof?(window.LIV_OCGRP||{}):(window.LIV_OCG||{});
-  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){return (a.n||'').localeCompare(b.n||'');});
+  var arr=C.filter(function(c){return c.occ===1;}).slice().sort(function(a,b){var G=window.LIV_OCG||{};function t(c){var g=G[c.id];return g?g.reduce(function(x,y){return x+y;},0):((c.ocpe||0)+(c.ocpr||0));}return t(b)-t(a);});
   function contrato(c){return (c.pe1||0)+(c.pe2||0)+(c.pe3||0)+(c.pf||0)+(c.pr1||0)+(c.pr2||0)+(c.pr3||0)+(c.pr4||0)+(c.pr5||0)+(c.pr6||0);}
   if(!prof){
     var fv=(document.getElementById('xliv-aocfilter')||{}).value||'';
