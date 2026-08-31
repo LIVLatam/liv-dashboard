@@ -2,13 +2,16 @@
 """Regenera datos.js desde la pestaña 'Datos_Dashboard' del Excel.
 Fuente de verdad = Excel. Uso: python3 gen_datos.py
 Requiere: openpyxl  (pip install openpyxl --break-system-packages)"""
-import json, sys, os
+import json, sys, os, re, datetime
 import openpyxl
 
+# Rutas portables (relativas a la ubicación de este script). Se pueden sobreescribir
+# con las variables de entorno LIV_XLSX y LIV_DATOS.
+HERE = os.path.dirname(os.path.abspath(__file__))
 XLSX = os.environ.get("LIV_XLSX",
-    "/sessions/keen-compassionate-carson/mnt/Mi unidad/Logística LIV México - campaña 1.xlsx")
+    os.path.join(HERE, "..", "..", "Logística LIV México - campaña 1.xlsx"))
 OUT = os.environ.get("LIV_DATOS",
-    "/sessions/keen-compassionate-carson/mnt/Mi unidad/Claude · LIV Latam/liv-dashboard-web/datos.js")
+    os.path.join(HERE, "datos.js"))
 
 def yn(v): return 1 if v == 'Sí' else 0
 def n(v):  return 0 if v in (None, '') else (int(v) if float(v) == int(v) else float(v))
@@ -41,21 +44,40 @@ def main():
             c['occ'] = yn(row.get('OC completa'))
             if ope not in (None, ''): c['ocpe'] = n(ope)
             if opr not in (None, ''): c['ocpr'] = n(opr)
+        # red / grupo de planteles (varias filas = una sola institucion); vacio = institucion propia
+        red = (row.get('Red') or '').strip()
+        if red: c['red'] = red
         # ordenar claves como el original
         order = ['id','n','es','ci','mu','co','pe1','pe2','pe3','pr1','pr2','pr3','pr4','pr5','pr6',
-                 'pf','p','bon','m','mc','vig','pago','cob','dir','occ','ocpe','ocpr','aula','f']
+                 'pf','p','bon','m','mc','vig','pago','cob','dir','occ','ocpe','ocpr','aula','f','red']
         C.append({k: c[k] for k in order if k in c})
         BON[str(cid)] = {'y': n(row['Duración (años)']), 'a1': n(row['Precio año 1']),
                          'a2': row.get('Precio año 2') or '—', 'a3': row.get('Precio año 3') or '—',
                          'a4': row.get('Precio año 4') or '—', 'b': row.get('Bonificación año 1') or '',
                          'c': 'Familias' if cob == 'Familia' else 'Colegio',
                          'p': row.get('Particularidad') or ''}
+    # --- barra "Última actualización": fecha automatica + resumen ---
+    # La fecha es la de esta corrida (siempre que se regenera, se actualiza sola).
+    # El resumen se pasa por la variable de entorno LIV_RESUMEN; si no se pasa,
+    # se conserva el que ya tenia el datos.js anterior.
+    fecha = datetime.date.today().strftime('%d/%m/%Y')
+    resumen = os.environ.get('LIV_RESUMEN', '').strip()
+    if not resumen:
+        try:
+            prev = open(OUT, encoding='utf-8').read()
+            m = re.search(r'window\.LIV_UPD=(\{.*?\});', prev, re.S)
+            if m: resumen = json.loads(m.group(1)).get('r', '')
+        except FileNotFoundError:
+            pass
+    if not resumen:
+        resumen = f'{len(C)} planteles en cartera'
     js = ("/* LIV · Datos del dashboard — generado por gen_datos.py desde la pestaña "
           "'Datos_Dashboard' del Excel. NO editar a mano. */\n"
           "window.LIV_C=" + json.dumps(C, ensure_ascii=False) + ";\n"
-          "window.LIV_BON=" + json.dumps(BON, ensure_ascii=False) + ";\n")
+          "window.LIV_BON=" + json.dumps(BON, ensure_ascii=False) + ";\n"
+          "window.LIV_UPD=" + json.dumps({'f': fecha, 'r': resumen}, ensure_ascii=False) + ";\n")
     open(OUT, 'w', encoding='utf-8').write(js)
-    print(f"OK · {len(C)} colegios → {OUT}")
+    print(f"OK · {len(C)} colegios → {OUT}  ({fecha})")
 
 if __name__ == "__main__":
     main()
