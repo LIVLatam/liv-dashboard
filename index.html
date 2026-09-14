@@ -1180,21 +1180,42 @@ render();
 // --- xliv: Operación Campaña 1 ---
 (function(){
  var xBONK=function(id){var b=((typeof BON!=='undefined'&&BON[id])?(BON[id].b||''):'');return /^100% bonificado/i.test(b)?'all':(/^Preescolar \+ Pre-First/i.test(b)?'pf':(/^Preescolar gratis/i.test(b)?'pe':null));};
- var fact=0,tot=0,pag=0,FX=17.3213;
+ var EX=(window.LIV_EXTRAS||{});
+ function facUnits(id,e){var fl=xBONK(id);var pe=e[0]+e[1]+e[2],pf=e[3],pr=e[4]+e[5]+e[6]+e[7]+e[8]+e[9];return fl==='all'?0:(fl==='pf'?pr:(fl==='pe'?(pf+pr):(pe+pf+pr)));}
+ var factOC=0,tot=0,pag=0,facExtra=0,exList=[],FX=17.3213;
  C.forEach(function(c){
   var pe=(c.pe1||0)+(c.pe2||0)+(c.pe3||0),pf=(c.pf||0),pr=(c.pr1||0)+(c.pr2||0)+(c.pr3||0)+(c.pr4||0)+(c.pr5||0)+(c.pr6||0),t=pe+pf+pr,free;
-  fact+=(c.m||0);
+  factOC+=(c.m||0);
   var xk=xBONK(c.id); free = xk==='all'?t:(xk==='pf'?(pe+pf):(xk==='pe'?pe:0));
   tot+=t; pag+=(t-free);
+  var e=EX[c.id]; if(e){var fe=facUnits(c.id,e)*(c.p||0); if(fe!==0){facExtra+=fe; exList.push({n:c.n,v:fe});}}
  });
- var tk=pag?Math.round(fact/pag):0, f=function(n){return n.toLocaleString("es-MX");};
- document.getElementById("xliv-fact").textContent="$"+f(fact);
- document.getElementById("xliv-factusd").textContent="≈ US$ "+f(Math.round(fact/FX));
+ var factTotal=factOC+facExtra;
+ var tk=pag?Math.round(factOC/pag):0, f=function(n){return n.toLocaleString("es-MX");};
+ document.getElementById("xliv-fact").textContent="$"+f(factTotal);
+ document.getElementById("xliv-factusd").textContent="≈ US$ "+f(Math.round(factTotal/FX))+" · 👆 clic: desglose";
  document.getElementById("xliv-pag").textContent=f(pag);
  document.getElementById("xliv-tk").textContent="$"+f(tk);
- document.getElementById("xliv-tkusd").textContent="US$ "+(tk/FX).toFixed(1)+" · año 1";
+ document.getElementById("xliv-tkusd").textContent="US$ "+(tk/FX).toFixed(1)+" · año 1 (OC)";
  document.getElementById("xliv-grat").textContent=f(tot-pag);
  var _ts=document.getElementById("xliv-totstud"); if(_ts) _ts.textContent=f(tot);
+ // --- modal desglose facturacion (OC vs extras) ---
+ exList.sort(function(a,b){return b.v-a.v;});
+ function fm(n){return (n<0?"-$":"$")+Math.abs(Math.round(n)).toLocaleString("es-MX");}
+ var rowsH="";
+ exList.forEach(function(it){rowsH+='<div class="xliv-fm-row"><span class="xliv-fm-cn">'+it.n+'</span><span class="xliv-fm-cv" style="color:'+(it.v<0?"#ff6b6b":"#e0a830")+'">'+fm(it.v)+'</span></div>';});
+ var mh='<div class="xliv-fm-box"><div class="xliv-fm-head"><div><div class="xliv-fm-title">&#128176; Facturaci\u00f3n a\u00f1o 1 &middot; desglose</div><div class="xliv-fm-sub">\u00d3rdenes de Compra + material extra facturable (excluye niveles con gratuidad a\u00f1o 1)</div></div><button class="xliv-fm-x" id="xliv-factm-x">&times;</button></div><div class="xliv-fm-body">'
+   +'<div class="xliv-fm-row" style="font-size:14px;padding:10px 0"><span class="xliv-fm-cn" style="color:#5bc4f5;font-weight:700">Facturaci\u00f3n OC (a\u00f1o 1)</span><span class="xliv-fm-cv" style="color:#5bc4f5">'+fm(factOC)+'</span></div>'
+   +'<div class="xliv-fm-row" style="font-size:14px;padding:10px 0"><span class="xliv-fm-cn" style="color:#e0a830;font-weight:700">Facturaci\u00f3n extras</span><span class="xliv-fm-cv" style="color:#e0a830">'+fm(facExtra)+'</span></div>'
+   +'<div class="xliv-fm-grp" style="margin-top:8px"><div class="xliv-fm-grph" style="border-color:#e0a830"><span style="color:#e0a830">Detalle facturaci\u00f3n extras</span><span class="xliv-fm-gsub">'+exList.length+' colegios</span></div>'+rowsH+'</div>'
+   +'</div><div class="xliv-fm-foot"><span>Facturaci\u00f3n total a\u00f1o 1</span><span>'+fm(factTotal)+'</span></div></div>';
+ var ov=document.createElement("div");ov.id="xliv-fact-modal";ov.className="xliv-fm-overlay";ov.style.display="none";ov.innerHTML=mh;document.body.appendChild(ov);
+ var fcard=document.getElementById("xliv-fact").parentElement;fcard.style.cursor="pointer";fcard.title="Ver desglose: Facturaci\u00f3n OC + extras";
+ function fcls(){ov.style.display="none";}
+ fcard.addEventListener("click",function(){ov.style.display="flex";});
+ document.getElementById("xliv-factm-x").addEventListener("click",fcls);
+ ov.addEventListener("click",function(ev){if(ev.target===ov)fcls();});
+ document.addEventListener("keydown",function(ev){if(ev.key==="Escape")fcls();});
 })();
 
 // --- xliv: detalle de bonificados (modal) ---
