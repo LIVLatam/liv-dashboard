@@ -354,6 +354,7 @@ tr.sel td{background:#1a2035!important}
   <button class="xliv-tab-btn" data-pane="xliv-profesoresoc" onclick="xTab('xliv-profesoresoc')">&#129681; Profesores OC</button>
   <button class="xliv-tab-btn" data-pane="xliv-extras" onclick="xTab('xliv-extras')">&#10133; Extras</button>
   <button class="xliv-tab-btn" data-pane="xliv-consolidado" onclick="xTab('xliv-consolidado')">&#129518; Consolidado</button>
+  <button class="xliv-tab-btn" data-pane="xliv-devoluciones" onclick="xTab('xliv-devoluciones')">&#8617;&#65039; Devoluciones</button>
 </div>
 <div id="xliv-contratos" class="xliv-pane xa">
 <div class="tw">
@@ -560,14 +561,14 @@ table.xtab td.sfac{text-align:center;font-family:'DM Mono',monospace;font-weight
 </table></div>
 </div>
 <div id="xliv-extras" class="xliv-pane">
-<div class="lvl-legend"><span class="lg-pe">● Preescolar</span><span class="lg-pr">● Primaria</span><span style="color:#6b7789">— material extra neto (pedidos 1/2/3 menos devoluciones) &middot; Fact. extra = unidades facturables &times; ticket (excluye niveles con gratuidad a&ntilde;o 1)</span></div>
+<div class="lvl-legend"><span class="lg-pe">● Preescolar</span><span class="lg-pr">● Primaria</span><span style="color:#6b7789">— material extra: <b>solo pedidos</b> (1/2/3) &middot; Fact. extra = unidades facturables &times; ticket (excluye niveles con gratuidad a&ntilde;o 1) &middot; las devoluciones est&aacute;n en su propia pesta&ntilde;a</span></div>
 <div class="tw"><table class="aoc xtab">
  <thead>
   <tr><th class="grp" colspan="2"></th><th class="grp gpe" colspan="4">● PREESCOLAR</th><th class="grp gpr" colspan="8">● PRIMARIA</th><th class="grp gtot" colspan="1">TOTAL</th><th class="grp gfac" colspan="1">FACTURACI&Oacute;N</th></tr>
   <tr><th style="width:22px">#</th><th style="text-align:left;min-width:150px">Colegio</th>
    <th class="hpe" style="text-align:center;width:30px">3°</th><th class="hpe" style="text-align:center;width:30px">4°</th><th class="hpe" style="text-align:center;width:30px">5°</th><th class="hpe tsum" style="text-align:center;width:44px">Total PE</th>
    <th class="hpr" style="text-align:center;width:34px">Pre‑F</th><th class="hpr" style="text-align:center;width:24px">1°</th><th class="hpr" style="text-align:center;width:24px">2°</th><th class="hpr" style="text-align:center;width:24px">3°</th><th class="hpr" style="text-align:center;width:24px">4°</th><th class="hpr" style="text-align:center;width:24px">5°</th><th class="hpr" style="text-align:center;width:24px">6°</th><th class="hpr tsum" style="text-align:center;width:44px">Total PR</th>
-   <th class="htot" style="text-align:center;width:52px">Neto</th><th class="hfac" style="text-align:center;width:96px">Fact. extra</th></tr>
+   <th class="htot" style="text-align:center;width:52px">Total</th><th class="hfac" style="text-align:center;width:96px">Fact. extra</th></tr>
  </thead>
  <tbody id="xliv-extbody"></tbody><tfoot id="xliv-extfoot"></tfoot>
 </table></div>
@@ -578,9 +579,22 @@ table.xtab td.sfac{text-align:center;font-family:'DM Mono',monospace;font-weight
  <thead>
   <tr><th style="width:22px">#</th><th style="text-align:left;min-width:170px">Colegio</th><th style="text-align:center;width:78px">Base</th>
    <th class="hpe" style="text-align:center;width:96px">● Preescolar</th><th class="hpr" style="text-align:center;width:150px">● Primaria</th>
-   <th class="htot" style="text-align:center;width:80px">TOTAL</th><th style="text-align:center;width:96px">Δ vs OC</th></tr>
+   <th style="text-align:center;width:88px">Alumnos OC</th><th class="htot" style="text-align:center;width:80px">TOTAL</th><th style="text-align:center;width:96px">Δ vs OC</th></tr>
  </thead>
  <tbody id="xliv-conbody"></tbody><tfoot id="xliv-confoot"></tfoot>
+</table></div>
+</div>
+<div id="xliv-devoluciones" class="xliv-pane">
+<div class="lvl-legend"><span class="lg-pe">● Preescolar</span><span class="lg-pr">● Primaria (incluye Pre-First)</span><span style="color:#6b7789">— material que los colegios <b>DEVOLVIERON</b> (resta del consolidado) &middot; $ menos = unidades facturables devueltas &times; ticket (excluye niveles con gratuidad a&ntilde;o 1)</span></div>
+<div class="tw"><table class="aoc xtab">
+ <thead>
+  <tr><th class="grp" colspan="2"></th><th class="grp gpe" colspan="4">● PREESCOLAR</th><th class="grp gpr" colspan="8">● PRIMARIA</th><th class="grp gtot" colspan="1">DEVUELTO</th><th class="grp gfac" colspan="1">$ MENOS</th></tr>
+  <tr><th style="width:22px">#</th><th style="text-align:left;min-width:150px">Colegio</th>
+   <th class="hpe" style="text-align:center;width:30px">3°</th><th class="hpe" style="text-align:center;width:30px">4°</th><th class="hpe" style="text-align:center;width:30px">5°</th><th class="hpe tsum" style="text-align:center;width:44px">Total PE</th>
+   <th class="hpr" style="text-align:center;width:34px">Pre‑F</th><th class="hpr" style="text-align:center;width:24px">1°</th><th class="hpr" style="text-align:center;width:24px">2°</th><th class="hpr" style="text-align:center;width:24px">3°</th><th class="hpr" style="text-align:center;width:24px">4°</th><th class="hpr" style="text-align:center;width:24px">5°</th><th class="hpr" style="text-align:center;width:24px">6°</th><th class="hpr tsum" style="text-align:center;width:44px">Total PR</th>
+   <th class="htot" style="text-align:center;width:60px">Devuelto</th><th class="hfac" style="text-align:center;width:96px">$ menos</th></tr>
+ </thead>
+ <tbody id="xliv-devbody"></tbody><tfoot id="xliv-devfoot"></tfoot>
 </table></div>
 </div>
 <div class="dp" id="dp">
@@ -599,6 +613,7 @@ table.xtab td.sfac{text-align:center;font-family:'DM Mono',monospace;font-weight
 <script>document.write('<script src="csf.js?v=' + Date.now() + '"><\/script>');</script>
 <script>document.write('<script src="ocgrades.js?v=' + Date.now() + '"><\/script>');</script>
 <script>document.write('<script src="extras.js?v=' + Date.now() + '"><\/script>');</script>
+<script>document.write('<script src="devoluciones.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
 const C=(window.LIV_C||[]);
 
@@ -692,20 +707,22 @@ function xRenderExtras(){
   var b=document.querySelector('.xliv-tab-btn[data-pane="xliv-extras"]');if(b)b.innerHTML='&#10133; Extras <span style="background:#e0a830;color:#1a1300;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+arr.length+'</span>';
 }
 function xRenderConsolidado(){
-  var EX=(window.LIV_EXTRAS||{}),OCG=(window.LIV_OCG||{});
+  var EX=(window.LIV_EXTRAS||{}),DV=(window.LIV_DEVOL||{}),OCG=(window.LIV_OCG||{});
   function base(c){var hasOC=(c.occ===1||c.ocpe!=null||c.ocpr!=null);var o=OCG[c.id];
     var pe=hasOC?(c.ocpe!=null?c.ocpe:gpe(c)):gpe(c);
     var pr=hasOC?(c.ocpr!=null?c.ocpr:gpr(c)):gpr(c);
     var pf=hasOC?(o?(o[3]||0):gpf(c)):gpf(c);
     return {pe:pe,pr:pr,pf:pf,hasOC:hasOC};}
-  var rows=getFiltered().map(function(c){var b=base(c);var e=EX[c.id]||[0,0,0,0,0,0,0,0,0,0];
+  var rows=getFiltered().map(function(c){var b=base(c);var e=EX[c.id]||[0,0,0,0,0,0,0,0,0,0];var d=DV[c.id]||[0,0,0,0,0,0,0,0,0,0];
     var ePE=e[0]+e[1]+e[2],ePF=e[3],ePR=e[4]+e[5]+e[6]+e[7]+e[8]+e[9];
-    var pe=b.pe+ePE, pr=b.pr+b.pf+ePR+ePF;   // primaria incluye Pre-First
-    return {c:c,origen:b.hasOC?'OC':'Contrato',pe:pe,pr:pr,tot:pe+pr,d:ePE+ePF+ePR};});
+    var dPE=d[0]+d[1]+d[2],dPF=d[3],dPR=d[4]+d[5]+d[6]+d[7]+d[8]+d[9];
+    var oc=b.pe+b.pf+b.pr;
+    var pe=b.pe+ePE-dPE, pr=b.pr+b.pf+ePR+ePF-dPR-dPF;
+    return {c:c,origen:b.hasOC?'OC':'Contrato',oc:oc,pe:pe,pr:pr,tot:pe+pr,d:(ePE+ePF+ePR)-(dPE+dPF+dPR)};});
   rows.sort(function(a,b){return b.tot-a.tot;});
   var tb=document.getElementById('xliv-conbody'),tf=document.getElementById('xliv-confoot');if(!tb)return;tb.innerHTML='';
-  var sPE=0,sPR=0,sTot=0,sD=0;
-  rows.forEach(function(r,i){sPE+=r.pe;sPR+=r.pr;sTot+=r.tot;sD+=r.d;
+  var sPE=0,sPR=0,sTot=0,sD=0,sOC=0;
+  rows.forEach(function(r,i){sPE+=r.pe;sPR+=r.pr;sTot+=r.tot;sD+=r.d;sOC+=r.oc;
     var org=r.origen==='OC'?'<span style="color:#5bc4f5;font-size:10px">OC</span>':'<span style="color:#8893a8;font-size:10px">Contrato</span>';
     var dc=r.d>0?'#34d399':(r.d<0?'#ff6b6b':'#6b7789');var dtx=r.d>0?('+'+r.d+' alumnos'):(r.d<0?(r.d+' alumnos'):'–');
     tb.innerHTML+='<tr><td style="color:#555e70;text-align:center;font-size:10px">'+(i+1)+'</td>'
@@ -713,14 +730,46 @@ function xRenderConsolidado(){
       +'<td style="text-align:center">'+org+'</td>'
       +'<td class="cpe" style="text-align:center;color:#5bc4f5;font-weight:700">'+r.pe+'</td>'
       +'<td class="cpr" style="text-align:center;color:#34d399;font-weight:700">'+r.pr+'</td>'
+      +'<td style="text-align:center;color:#9aa6b8;font-weight:600">'+r.oc+'</td>'
       +'<td class="stot" style="font-size:14px">'+r.tot+'</td>'
       +'<td style="text-align:center;color:'+dc+';font-weight:700;font-size:11px">'+dtx+'</td></tr>';});
   if(tf)tf.innerHTML='<tr class="xliv-tfoot"><td></td><td style="text-align:left;color:#4a7fa5;font-weight:700">TOTAL · '+rows.length+' colegios</td><td></td>'
-    +'<td class="spe">'+sPE+'</td><td class="spr">'+sPR+'</td><td class="stot">'+sTot.toLocaleString()+'</td>'
+    +'<td class="spe">'+sPE+'</td><td class="spr">'+sPR+'</td><td style="text-align:center;color:#9aa6b8;font-weight:700">'+sOC.toLocaleString()+'</td><td class="stot">'+sTot.toLocaleString()+'</td>'
     +'<td style="text-align:center;color:'+(sD>0?'#34d399':(sD<0?'#ff6b6b':'#6b7789'))+';font-weight:800;font-size:11px">'+(sD>0?'+'+sD:sD)+'</td></tr>';
   var b=document.querySelector('.xliv-tab-btn[data-pane="xliv-consolidado"]');if(b)b.innerHTML='&#129518; Consolidado <span style="background:#34d399;color:#062012;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+sTot.toLocaleString()+'</span>';
 }
-function xApplyFilters(){render();var a=document.querySelector('.xliv-pane.xa');if(a){if(a.id==='xliv-logistica')xRenderLog();else if(a.id==='xliv-cobro')xRenderCobro();else if(a.id==='xliv-aula')xRenderAula();else if(a.id==='xliv-bonif')xRenderBonif();else if(a.id==='xliv-alumnosoc')xRenderAlumnosOC();else if(a.id==='xliv-profesoresoc')xRenderProfesoresOC();else if(a.id==='xliv-extras')xRenderExtras();else if(a.id==='xliv-consolidado')xRenderConsolidado();}}
+function xRenderDevoluciones(){
+  var DV=(window.LIV_DEVOL||{}),BON=(window.LIV_BON||{});
+  function freeLvl(id){var b=(BON[id]?(BON[id].b||''):'');return /^100% bonificado/i.test(b)?'all':(/^Preescolar \+ Pre-First/i.test(b)?'pf':(/^Preescolar gratis/i.test(b)?'pe':null));}
+  function facUnits(id,e){var fl=freeLvl(id);var pre=e[0]+e[1]+e[2],pref=e[3],prim=e[4]+e[5]+e[6]+e[7]+e[8]+e[9];return fl==='all'?0:(fl==='pf'?prim:(fl==='pe'?(pref+prim):(pre+pref+prim)));}
+  var arr=getFiltered().filter(function(c){var d=DV[c.id];return d&&d.some(function(v){return v!==0;});})
+    .sort(function(a,b){function t(c){return (DV[c.id]||[]).reduce(function(x,y){return x+y;},0);}return t(b)-t(a);});
+  var tb=document.getElementById('xliv-devbody'),tf=document.getElementById('xliv-devfoot');if(!tb)return;tb.innerHTML='';
+  var s=[0,0,0,0,0,0,0,0,0,0],sDin=0;
+  function cel(v,cls){var tx=v>0?('-'+v):'–';var col=v>0?'#ff6b6b':'#3a4453';return '<td class="'+cls+'" style="text-align:center;color:'+col+'">'+tx+'</td>';}
+  arr.forEach(function(c,i){
+    var d=DV[c.id]||[0,0,0,0,0,0,0,0,0,0];for(var k=0;k<10;k++)s[k]+=d[k];
+    var sPE=d[0]+d[1]+d[2],sPR=d[3]+d[4]+d[5]+d[6]+d[7]+d[8]+d[9],tot=sPE+sPR;
+    var din=facUnits(c.id,d)*(c.p||0);sDin+=din;
+    tb.innerHTML+='<tr><td style="color:#555e70;text-align:center;font-size:10px">'+(i+1)+'</td>'
+      +'<td style="color:#e8edf5;font-weight:600;text-align:left">'+c.n+'</td>'
+      +cel(d[0],'cpe')+cel(d[1],'cpe')+cel(d[2],'cpe')
+      +'<td class="spe" style="color:#ff6b6b">'+(sPE?('-'+sPE):'–')+'</td>'
+      +cel(d[3],'cpr')+cel(d[4],'cpr')+cel(d[5],'cpr')+cel(d[6],'cpr')+cel(d[7],'cpr')+cel(d[8],'cpr')+cel(d[9],'cpr')
+      +'<td class="spr" style="color:#ff6b6b">'+(sPR?('-'+sPR):'–')+'</td>'
+      +'<td class="stot" style="color:#ff6b6b">'+(tot?('-'+tot):'–')+'</td>'
+      +'<td class="sfac" style="color:'+(din>0?'#ff6b6b':'#3a4453')+'">'+(din>0?('-$'+din.toLocaleString('es-MX')):'$0')+'</td></tr>';
+  });
+  var sPEt=s[0]+s[1]+s[2],sPRt=s[3]+s[4]+s[5]+s[6]+s[7]+s[8]+s[9];
+  function ft(v){return v?('-'+v):'0';}
+  if(tf)tf.innerHTML='<tr class="xliv-tfoot"><td></td><td style="text-align:left;color:#4a7fa5;font-weight:700">TOTAL · '+arr.length+' colegios</td>'
+    +'<td style="text-align:center">'+ft(s[0])+'</td><td style="text-align:center">'+ft(s[1])+'</td><td style="text-align:center">'+ft(s[2])+'</td><td class="spe" style="color:#ff6b6b">'+ft(sPEt)+'</td>'
+    +'<td style="text-align:center">'+ft(s[3])+'</td><td style="text-align:center">'+ft(s[4])+'</td><td style="text-align:center">'+ft(s[5])+'</td><td style="text-align:center">'+ft(s[6])+'</td><td style="text-align:center">'+ft(s[7])+'</td><td style="text-align:center">'+ft(s[8])+'</td><td style="text-align:center">'+ft(s[9])+'</td><td class="spr" style="color:#ff6b6b">'+ft(sPRt)+'</td>'
+    +'<td class="stot" style="color:#ff6b6b">'+ft(sPEt+sPRt)+'</td>'
+    +'<td class="sfac" style="color:#ff6b6b">'+(sDin>0?('-$'+sDin.toLocaleString('es-MX')):'$0')+'</td></tr>';
+  var b=document.querySelector('.xliv-tab-btn[data-pane="xliv-devoluciones"]');if(b)b.innerHTML='&#8617;&#65039; Devoluciones <span style="background:#ff6b6b;color:#2a0000;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">'+arr.length+'</span>';
+}
+function xApplyFilters(){render();var a=document.querySelector('.xliv-pane.xa');if(a){if(a.id==='xliv-logistica')xRenderLog();else if(a.id==='xliv-cobro')xRenderCobro();else if(a.id==='xliv-aula')xRenderAula();else if(a.id==='xliv-bonif')xRenderBonif();else if(a.id==='xliv-alumnosoc')xRenderAlumnosOC();else if(a.id==='xliv-profesoresoc')xRenderProfesoresOC();else if(a.id==='xliv-extras')xRenderExtras();else if(a.id==='xliv-consolidado')xRenderConsolidado();else if(a.id==='xliv-devoluciones')xRenderDevoluciones();}}
 function xFocSinOC(){var s=document.getElementById('foc');if(!s)return;s.value=(s.value==='sin'?'':'sin');xApplyFilters();}
 function render(){
   const list=getFiltered();
@@ -786,7 +835,8 @@ function render(){
   document.getElementById('kc').textContent=list.length;
   document.getElementById('kinst').textContent=xInst(list);
   var _ex=list.reduce(function(a,c){var e=(window.LIV_EXTRAS||{})[c.id]||[0,0,0,0,0,0,0,0,0,0];a.pe+=e[0]+e[1]+e[2];a.pf+=e[3];a.pr+=e[4]+e[5]+e[6]+e[7]+e[8]+e[9];return a;},{pe:0,pf:0,pr:0});
-  var tPEtot=tPEvig+_ex.pe,tPFtot=tPFvig+_ex.pf,tPRtot=tPRvig+_ex.pr,tAtot=tAvig+_ex.pe+_ex.pf+_ex.pr;
+  var _dv=list.reduce(function(a,c){var d=(window.LIV_DEVOL||{})[c.id]||[0,0,0,0,0,0,0,0,0,0];a.pe+=d[0]+d[1]+d[2];a.pf+=d[3];a.pr+=d[4]+d[5]+d[6]+d[7]+d[8]+d[9];return a;},{pe:0,pf:0,pr:0});
+  var tPEtot=tPEvig+_ex.pe-_dv.pe,tPFtot=tPFvig+_ex.pf-_dv.pf,tPRtot=tPRvig+_ex.pr-_dv.pr,tAtot=tAvig+(_ex.pe+_ex.pf+_ex.pr)-(_dv.pe+_dv.pf+_dv.pr);
   document.getElementById('ka').textContent=tAtot.toLocaleString();
   document.getElementById('kpe').textContent=tPEtot.toLocaleString();
   document.getElementById('kpep').textContent=tAtot?Math.round(tPEtot/tAtot*100)+'% del total':'--';
@@ -867,6 +917,7 @@ function xTab(id){
   if(id==='xliv-profesoresoc') xRenderProfesoresOC();
   if(id==='xliv-extras') xRenderExtras();
   if(id==='xliv-consolidado') xRenderConsolidado();
+  if(id==='xliv-devoluciones') xRenderDevoluciones();
 }
 function xRenderLog(){
   var list=getFiltered(),tb=document.getElementById('xliv-ltbody'),tf=document.getElementById('xliv-ltfoot');
@@ -1101,7 +1152,7 @@ function xExpRender(tab){
 function xExpPDF(tab){
   xExpRender(tab);
   // Setear título del header de print
-  var tabNames={'xliv-contratos':'Alumnos x contrato','xliv-logistica':'Logística','xliv-cobro':'Cobro','xliv-aula':'Aula LIV','xliv-bonif':'Bonificaciones','xliv-csf':'CSF','xliv-alumnosoc':'Alumnos OC','xliv-profesoresoc':'Profesores OC','xliv-extras':'Extras','xliv-consolidado':'Consolidado','xliv-oc':'OC'};
+  var tabNames={'xliv-contratos':'Alumnos x contrato','xliv-logistica':'Logística','xliv-cobro':'Cobro','xliv-aula':'Aula LIV','xliv-bonif':'Bonificaciones','xliv-csf':'CSF','xliv-alumnosoc':'Alumnos OC','xliv-profesoresoc':'Profesores OC','xliv-extras':'Extras','xliv-consolidado':'Consolidado','xliv-devoluciones':'Devoluciones','xliv-oc':'OC'};
   var titleEl=document.getElementById('xliv-print-title');
   var dateEl=document.getElementById('xliv-print-date');
   if(titleEl) titleEl.textContent='Dashboard Lucas Doberti · '+(tabNames[tab]||'Reporte');
@@ -1180,17 +1231,18 @@ render();
 // --- xliv: Operación Campaña 1 ---
 (function(){
  var xBONK=function(id){var b=((typeof BON!=='undefined'&&BON[id])?(BON[id].b||''):'');return /^100% bonificado/i.test(b)?'all':(/^Preescolar \+ Pre-First/i.test(b)?'pf':(/^Preescolar gratis/i.test(b)?'pe':null));};
- var EX=(window.LIV_EXTRAS||{});
+ var EX=(window.LIV_EXTRAS||{}),DV=(window.LIV_DEVOL||{});
  function facUnits(id,e){var fl=xBONK(id);var pe=e[0]+e[1]+e[2],pf=e[3],pr=e[4]+e[5]+e[6]+e[7]+e[8]+e[9];return fl==='all'?0:(fl==='pf'?pr:(fl==='pe'?(pf+pr):(pe+pf+pr)));}
- var factOC=0,tot=0,pag=0,facExtra=0,exList=[],FX=17.3213;
+ var factOC=0,tot=0,pag=0,facExtra=0,exList=[],facDevol=0,devList=[],FX=17.3213;
  C.forEach(function(c){
   var pe=(c.pe1||0)+(c.pe2||0)+(c.pe3||0),pf=(c.pf||0),pr=(c.pr1||0)+(c.pr2||0)+(c.pr3||0)+(c.pr4||0)+(c.pr5||0)+(c.pr6||0),t=pe+pf+pr,free;
   factOC+=(c.m||0);
   var xk=xBONK(c.id); free = xk==='all'?t:(xk==='pf'?(pe+pf):(xk==='pe'?pe:0));
   tot+=t; pag+=(t-free);
   var e=EX[c.id]; if(e){var fe=facUnits(c.id,e)*(c.p||0); if(fe!==0){facExtra+=fe; exList.push({n:c.n,v:fe});}}
+  var dv=DV[c.id]; if(dv){var fd=facUnits(c.id,dv)*(c.p||0); if(fd!==0){facDevol+=fd; devList.push({n:c.n,v:-fd});}}
  });
- var factTotal=factOC+facExtra;
+ var factTotal=factOC+facExtra-facDevol;
  var tk=pag?Math.round(factOC/pag):0, f=function(n){return n.toLocaleString("es-MX");};
  document.getElementById("xliv-fact").textContent="$"+f(factTotal);
  document.getElementById("xliv-factusd").textContent="≈ US$ "+f(Math.round(factTotal/FX))+" · 👆 clic: desglose";
@@ -1204,13 +1256,18 @@ render();
  function fm(n){return (n<0?"-$":"$")+Math.abs(Math.round(n)).toLocaleString("es-MX");}
  var rowsH="";
  exList.forEach(function(it){rowsH+='<div class="xliv-fm-row"><span class="xliv-fm-cn">'+it.n+'</span><span class="xliv-fm-cv" style="color:'+(it.v<0?"#ff6b6b":"#e0a830")+'">'+fm(it.v)+'</span></div>';});
- var mh='<div class="xliv-fm-box"><div class="xliv-fm-head"><div><div class="xliv-fm-title">&#128176; Facturaci\u00f3n a\u00f1o 1 &middot; desglose</div><div class="xliv-fm-sub">\u00d3rdenes de Compra + material extra facturable (excluye niveles con gratuidad a\u00f1o 1)</div></div><button class="xliv-fm-x" id="xliv-factm-x">&times;</button></div><div class="xliv-fm-body">'
+ devList.sort(function(a,b){return a.v-b.v;});
+ var rowsD="";
+ devList.forEach(function(it){rowsD+='<div class="xliv-fm-row"><span class="xliv-fm-cn">'+it.n+'</span><span class="xliv-fm-cv" style="color:#ff6b6b">'+fm(it.v)+'</span></div>';});
+ var mh='<div class="xliv-fm-box"><div class="xliv-fm-head"><div><div class="xliv-fm-title">&#128176; Facturaci\u00f3n a\u00f1o 1 &middot; desglose</div><div class="xliv-fm-sub">\u00d3rdenes de Compra + material extra \u2212 devoluciones (facturable; excluye niveles con gratuidad a\u00f1o 1)</div></div><button class="xliv-fm-x" id="xliv-factm-x">&times;</button></div><div class="xliv-fm-body">'
    +'<div class="xliv-fm-row" style="font-size:14px;padding:10px 0"><span class="xliv-fm-cn" style="color:#5bc4f5;font-weight:700">Facturaci\u00f3n OC (a\u00f1o 1)</span><span class="xliv-fm-cv" style="color:#5bc4f5">'+fm(factOC)+'</span></div>'
    +'<div class="xliv-fm-row" style="font-size:14px;padding:10px 0"><span class="xliv-fm-cn" style="color:#e0a830;font-weight:700">Facturaci\u00f3n extras</span><span class="xliv-fm-cv" style="color:#e0a830">'+fm(facExtra)+'</span></div>'
    +'<div class="xliv-fm-grp" style="margin-top:8px"><div class="xliv-fm-grph" style="border-color:#e0a830"><span style="color:#e0a830">Detalle facturaci\u00f3n extras</span><span class="xliv-fm-gsub">'+exList.length+' colegios</span></div>'+rowsH+'</div>'
+   +'<div class="xliv-fm-row" style="font-size:14px;padding:10px 0"><span class="xliv-fm-cn" style="color:#ff6b6b;font-weight:700">Devoluciones (menos facturaci\u00f3n)</span><span class="xliv-fm-cv" style="color:#ff6b6b">'+fm(-facDevol)+'</span></div>'
+   +'<div class="xliv-fm-grp" style="margin-top:8px"><div class="xliv-fm-grph" style="border-color:#ff6b6b"><span style="color:#ff6b6b">Detalle devoluciones</span><span class="xliv-fm-gsub">'+devList.length+' colegios</span></div>'+rowsD+'</div>'
    +'</div><div class="xliv-fm-foot"><span>Facturaci\u00f3n total a\u00f1o 1</span><span>'+fm(factTotal)+'</span></div></div>';
  var ov=document.createElement("div");ov.id="xliv-fact-modal";ov.className="xliv-fm-overlay";ov.style.display="none";ov.innerHTML=mh;document.body.appendChild(ov);
- var fcard=document.getElementById("xliv-fact").parentElement;fcard.style.cursor="pointer";fcard.title="Ver desglose: Facturaci\u00f3n OC + extras";
+ var fcard=document.getElementById("xliv-fact").parentElement;fcard.style.cursor="pointer";fcard.title="Ver desglose: Facturaci\u00f3n OC + extras \u2212 devoluciones";
  function fcls(){ov.style.display="none";}
  fcard.addEventListener("click",function(){ov.style.display="flex";});
  document.getElementById("xliv-factm-x").addEventListener("click",fcls);
